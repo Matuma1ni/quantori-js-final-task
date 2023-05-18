@@ -1,0 +1,23 @@
+.page404 {
+    width: 100vw;
+}
+.content404 {
+    font-family: 'Open Sans';
+    font-style: normal;
+    margin-left: 45.5%;
+    width: 9%;
+}
+.header404 {
+    margin: 0px 0px;
+    font-weight: 600;
+    font-size: 72px;
+    line-height: 98px;
+    color: #000000;
+}
+.text404 {
+    margin: 0px 0px 20px 0px;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    color: #9F9F9F;
+}
