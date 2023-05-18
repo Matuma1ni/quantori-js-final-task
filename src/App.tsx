@@ -1,12 +1,18 @@
+import React from "react"
 import "./App.css"
-
-import { Fragment } from "react"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { InitialPage } from "./pages/InitialPage"
 
 const App = () => {
   return (
-    <Fragment>
-      <h1>{"Your final task"}</h1>
-    </Fragment>
+
+    <React.StrictMode>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<InitialPage />} />
+        </Routes>
+      </BrowserRouter>
+    </React.StrictMode>
   )
 }
 
