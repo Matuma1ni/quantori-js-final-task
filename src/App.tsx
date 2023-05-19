@@ -6,18 +6,24 @@ import { InitialPage } from "./pages/InitialPage"
 import { NotFoundPage } from "./pages/NotFoundPage"
 import { Header } from "./components/Header"
 import { AuthPage } from "./pages/AuthPage"
+import { useAuthState } from "react-firebase-hooks/auth"
+import { auth } from "./authConfig"
+import { AuthRoute } from "./components/AuthRoute"
+import { NotAuthRoute } from "./components/NotAuthRoute"
+import { SearchPage } from "./pages/SearchPage"
 
 const App = () => {
   return (
     <React.StrictMode>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<AuthLayout/>}>
-            <Route path="/" element={<InitialPage />} /> 
-            <Route path="/auth" element={<AuthPage />} /> 
-          </Route>      
-          <Route path="/" element={<MainLayout/>}>
-            <Route path="/not-found" element={<NotFoundPage />} /> 
+          <Route path="/" element={<AuthLayout />}>
+            <Route path="/" element={<NotAuthRoute><InitialPage /></NotAuthRoute>} />
+            <Route path="/auth" element={<NotAuthRoute><AuthPage /></NotAuthRoute>} />
+          </Route>
+          <Route path="/" element={<MainLayout />}>
+            <Route path="/search" element={<AuthRoute><SearchPage /></AuthRoute>} />
+            <Route path="/not-found" element={<NotFoundPage />} />
             <Route path="*" element={<Navigate to="/not-found" />} />
           </Route>
         </Routes>
@@ -30,7 +36,7 @@ function MainLayout() {
   return (
     <>
       <Header />
-      <Outlet /> 
+      <Outlet />
     </>
   );
 }
