@@ -8,8 +8,8 @@ interface Props {
 }
 
 export const NotAuthRoute: FC<Props> = ({ children }) => {
-
-    const [user, loading, error] = useAuthState(auth);
+    //const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
 
     if (user) {
         return <Navigate to="/search" />;

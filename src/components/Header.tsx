@@ -3,7 +3,8 @@ import { auth, logout } from "../authConfig"
 import { useAuthState } from "react-firebase-hooks/auth";
 
 export const Header = () => {
-    const [user, loading, error] = useAuthState(auth);
+    //const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     
     return (
         <AppBar position="fixed" sx={{color: "black", backgroundColor: 'white', borderBottom: "1px solid #D8E7FF", boxShadow: "0px 0px 0px 0px"}}>
