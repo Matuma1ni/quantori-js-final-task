@@ -15,6 +15,10 @@ export const firebaseErrorMessages: ErrorMessages = {
                             field: 'password',
                             message: 'Incorrect password'
                             },
+    'auth/email-already-in-use' : {
+                            field: 'email',
+                            message: 'There is already an account with this email'
+                            },
     'default': {
         field: 'email',
         message: 'Something went wrong. Please, try again'

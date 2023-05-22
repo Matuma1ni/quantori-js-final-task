@@ -4,18 +4,16 @@ import { FC, useEffect, useRef, useState } from "react"
 import { auth } from "../authConfig"
 import { PasswordInput } from "./PasswordInput"
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth"
-import { firebaseErrorMessages } from "./errorMessages"
+import { firebaseErrorMessages } from "../helpers/errorMessages"
+import { emailRegexp } from "../helpers/regexps"
 
 interface Props {
     onClickSignup: () => void;
 }
 
-const emailRegexp: RegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
 export const LoginForm: FC<Props> = ({ onClickSignup }) => {
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
-    const buttonRef= useRef<HTMLButtonElement>(null);
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     // [signInWithEmailAndPassword, user, loading, loginError]
@@ -27,6 +25,7 @@ export const LoginForm: FC<Props> = ({ onClickSignup }) => {
       ] = useSignInWithEmailAndPassword(auth);
     
     const [disablingButton, setDisablingButton] = useState(true)
+
     useEffect(() => {
         if (loginError?.code) {
             const error = firebaseErrorMessages[loginError.code] ?? firebaseErrorMessages['default'];
@@ -68,9 +67,7 @@ export const LoginForm: FC<Props> = ({ onClickSignup }) => {
     }
 
     function handleInput() {
-        if (buttonRef.current) {
-            setDisablingButton(!emailRef.current?.value || !passwordRef.current?.value);
-        }
+        setDisablingButton(!emailRef.current?.value || !passwordRef.current?.value);
     }
     
 
@@ -94,7 +91,7 @@ export const LoginForm: FC<Props> = ({ onClickSignup }) => {
                 <h4 className="formHeader">Password</h4>
                 <PasswordInput onInputEnableButton={handleInput} onFocusResetError={handlePasswordFocus} error={passwordError} inputRef={passwordRef} />
             </div>
-            <Button ref={buttonRef} onClick={handleLogin} disabled={disablingButton} sx={{ width: "86.6%", background: "#D8E7FF", borderRadius: "12px", color: "#175BC0", fontWeight: "700" }}>Login</Button>
+            <Button onClick={handleLogin} disabled={disablingButton} sx={{ width: "86.6%", background: "#D8E7FF", borderRadius: "12px", color: "#175BC0", fontWeight: "700" }}>Login</Button>
             <p className="loginFooter">Don’t have an account?
                 <span onClick={handleClickSignup} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Sign up </span>
             </p>
