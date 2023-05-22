@@ -25,7 +25,8 @@ export const LoginForm: FC<Props> = ({ onClickSignup }) => {
         __,
         loginError,
       ] = useSignInWithEmailAndPassword(auth);
-
+    
+    const [disablingButton, setDisablingButton] = useState(true)
     useEffect(() => {
         if (loginError?.code) {
             const error = firebaseErrorMessages[loginError.code] ?? firebaseErrorMessages['default'];
@@ -68,7 +69,7 @@ export const LoginForm: FC<Props> = ({ onClickSignup }) => {
 
     function handleInput() {
         if (buttonRef.current) {
-            buttonRef.current.disabled = !emailRef.current?.value || !passwordRef.current?.value;
+            setDisablingButton(!emailRef.current?.value || !passwordRef.current?.value);
         }
     }
     
@@ -93,7 +94,7 @@ export const LoginForm: FC<Props> = ({ onClickSignup }) => {
                 <h4 className="formHeader">Password</h4>
                 <PasswordInput onInputEnableButton={handleInput} onFocusResetError={handlePasswordFocus} error={passwordError} inputRef={passwordRef} />
             </div>
-            <Button ref={buttonRef} onClick={handleLogin} disabled={true} sx={{ width: "86.6%", background: "#D8E7FF", borderRadius: "12px", color: "#175BC0", fontWeight: "700" }}>Login</Button>
+            <Button ref={buttonRef} onClick={handleLogin} disabled={disablingButton} sx={{ width: "86.6%", background: "#D8E7FF", borderRadius: "12px", color: "#175BC0", fontWeight: "700" }}>Login</Button>
             <p className="loginFooter">Don’t have an account?
                 <span onClick={handleClickSignup} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Sign up </span>
             </p>
