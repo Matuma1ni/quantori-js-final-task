@@ -1,12 +1,15 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { FilledInput, FormControl, IconButton, InputAdornment, InputLabel } from "@mui/material";
+import { FilledInput, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel } from "@mui/material";
 import { FC, useState } from "react";
 
 interface Props {
-    inputRef: React.RefObject<HTMLInputElement>
+    error?: string,
+    inputRef: React.RefObject<HTMLInputElement>,
+    onFocusResetError?: () => void,
+    onInputEnableButton?: () => void
 }
 
-export const PasswordInput:FC<Props> = ({ inputRef }) => {
+export const PasswordInput:FC<Props> = ({ inputRef, error, onFocusResetError, onInputEnableButton}) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -16,7 +19,7 @@ export const PasswordInput:FC<Props> = ({ inputRef }) => {
       };
     
     return (
-        <FormControl sx={{ width: '100%', marginBottom: "20px", fontFamily: "Open Sans" }} variant="filled">
+        <FormControl error={!!error} onInput={onInputEnableButton} onFocus={onFocusResetError} sx={{ width: '100%', marginBottom: "20px", fontFamily: "Open Sans" }} variant="filled">
             <InputLabel htmlFor="filled-adornment-password">Enter your password</InputLabel>
             <FilledInput
                 inputRef={inputRef}
@@ -35,6 +38,7 @@ export const PasswordInput:FC<Props> = ({ inputRef }) => {
                     </InputAdornment>
                 }
             />
+            {(error) && <FormHelperText>{error}</FormHelperText>}
         </FormControl>
     )
 }
