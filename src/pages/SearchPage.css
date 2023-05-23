@@ -1,0 +1,32 @@
+.searchPageLayout {
+    margin-top: 57px;
+    align-items: center;
+    width: 95vw;
+    height: calc(95vh - 57px);
+}
+.searchPageHeader {
+    margin-left: 6%;
+    margin-top: 84px;
+    width: 88%;
+}
+.searchInput {
+    height: 40px;
+    border: 1px solid #D9D9D9;
+    border-radius: 8px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    color: #9F9F9F;
+    width: calc(100% - 179px - 78px - 40px);
+    padding: 0px 20px;
+}
+.searchPagePlaceHolder {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    color: #616161;
+    margin-top: 35vh;
+}
