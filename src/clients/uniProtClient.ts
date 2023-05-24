@@ -31,3 +31,5 @@ export async function searchProteins(query:string): Promise<Protein[]> {
         length: result.features.find((feature: any) => feature.type==='Chain').location.end.value as number, 
         }))
 }
+
+//export async function getProteinInfo(query:string): Promise<> {}
