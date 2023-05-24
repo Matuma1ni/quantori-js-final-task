@@ -3,15 +3,20 @@ import { Protein } from "../models/protein";
 const UniProtUrl="https://rest.uniprot.org/uniprotkb/search"
 
 function extractGenes(resultJson: any) {
-    if (resultJson.genes.length > 1) {
-        return resultJson.genes.map((gene: any) => [gene.geneName.value, ...gene.synonyms.map((synonym: any) => synonym.value)]).flat()
+    const gene = resultJson.genes[0]
+    if (gene.synonyms) {
+        const polyNames = [gene.geneName.value, ...gene.synonyms.map((synonym: any) => synonym.value)].flat()
+        return polyNames
     } else { 
-        return [resultJson.genes[0].geneName.value]
+        return [gene.geneName.value]
     }
 }
 
 function extractCellularLocation(resultJson: any) {
-    return resultJson.comments.find((comment:any) => comment.commentType==='SUBCELLULAR LOCATION')?.subcellularLocations.map((location: any) => location.value)
+    const cellularLocation = resultJson.comments
+        .find((comment:any) => comment.commentType==='SUBCELLULAR LOCATION')?.subcellularLocations
+        .map((obj: any) => obj.location.value)
+    return cellularLocation ?? []
 }
 
 export async function searchProteins(query:string): Promise<Protein[]> {
