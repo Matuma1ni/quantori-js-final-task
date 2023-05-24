@@ -7,10 +7,15 @@ import { SearchTable } from '../components/SearchTable';
 export const SearchPage = () => {
     const searchRef = useRef<HTMLInputElement>(null)
     const [searchState, setSearchState] = useState('');
+    const [startRow, setStartRow] = useState(1);
 
     const handleOnSearch = () => {
         if (searchRef.current) {
-            setSearchState(searchRef.current.value)
+            if (searchRef.current.value) {
+                setSearchState(searchRef.current.value)
+            } else {
+                setSearchState('*')
+            }
         }
     }
 
@@ -38,7 +43,7 @@ export const SearchPage = () => {
                 </IconButton>
             </div>
             {searchState ? (
-                <SearchTable searchQuery={searchState} />
+                <SearchTable searchQuery={searchState} startRow={startRow} />
             ) : (
                 <div className="searchPagePlaceHolder"> No data to display<br />Please start search to display results</div>
             )}
