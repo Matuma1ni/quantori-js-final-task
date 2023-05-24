@@ -1,11 +1,11 @@
 import { FC, useEffect, useState } from "react"
 import './SearchTable.css'
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, styled, tableCellClasses } from "@mui/material";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled, tableCellClasses } from "@mui/material";
 import { searchProteins } from "../clients/uniProtClient";
 import { Protein } from "../models/protein";
+import { useSearchParams } from "react-router-dom";
 
 interface Props {
-    searchQuery: string,
     startRow: number,
 }
 
@@ -15,6 +15,7 @@ const StyledTableCell = styled(TableCell)(() => ({
         color: '#000000',
     },
     [`&.${tableCellClasses.body}`]: {
+        fontStyle: 'normal',
         fontSize: 12,
         fontWeight: 600,
         lineHeight: '16px',
@@ -22,8 +23,9 @@ const StyledTableCell = styled(TableCell)(() => ({
 }));
 
 
-export const SearchTable: FC<Props> = ({ searchQuery, startRow }) => {
+export const SearchTable: FC<Props> = ({ startRow }) => {
     const [proteins, setProteins] = useState<Protein[]>([]);
+    const [searchParams] = useSearchParams()
 
     function createData(
         index: number,
@@ -37,13 +39,15 @@ export const SearchTable: FC<Props> = ({ searchQuery, startRow }) => {
         return { index, entry, entryNames, genes, organism, subcellularLocation, length };
     }
 
+    const searchQuery = searchParams.get("query") as string
+
     useEffect(() => {
         async function fetch() {
             const proteinsFetched = await searchProteins(searchQuery);
             setProteins(proteinsFetched);
         }
         fetch();
-    }, [searchQuery])
+    }, [searchParams])
 
     const rows = proteins.map((protein: Protein, index) => createData(
         (index + 1),
@@ -55,7 +59,6 @@ export const SearchTable: FC<Props> = ({ searchQuery, startRow }) => {
         protein.length
     ));
 
-
     return (
         <div className="searchPageContainer">
             {searchQuery !== '*' ? (
@@ -64,8 +67,8 @@ export const SearchTable: FC<Props> = ({ searchQuery, startRow }) => {
                 <h3 className="searchTableHeader">{proteins.length} Search Results</h3>
             )}
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: "75vh" }}>
-                    <Table stickyHeader sx={{ minWidth: 650 }} aria-label="sticky table">
+                <TableContainer sx={{ maxHeight: "75vh", width: '82.5vw' }}>
+                    <Table stickyHeader sx={{ width: '100%' }} aria-label="sticky table">
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>#</StyledTableCell>
@@ -74,7 +77,7 @@ export const SearchTable: FC<Props> = ({ searchQuery, startRow }) => {
                                 <StyledTableCell align="left">Genes</StyledTableCell>
                                 <StyledTableCell align="left">Organism</StyledTableCell>
                                 <StyledTableCell align="left">Subcellular Location</StyledTableCell>
-                                <StyledTableCell align="left">Length, AA</StyledTableCell>
+                                <StyledTableCell align="left">Length (AA)</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
