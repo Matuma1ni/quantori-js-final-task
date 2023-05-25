@@ -66,3 +66,8 @@
     font-size: 12px;
     line-height: 16px;
 }
+.cardsContainer {
+    height: 60vh;
+    overflow:auto;
+    margin-left: -20px;
+}

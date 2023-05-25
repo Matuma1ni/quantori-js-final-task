@@ -24,7 +24,7 @@ const App = () => {
           </Route>
           <Route path="/" element={<MainLayout />}>
             <Route path="/search" element={<AuthRoute><SearchPage /></AuthRoute>} />
-            <Route path="/polymer/:id" element={<AuthRoute><ProteinPage /></AuthRoute>} />
+            <Route path="/protein/:id" element={<AuthRoute><ProteinPage /></AuthRoute>} />
             <Route path="/not-found" element={<NotFoundPage />} />
             <Route path="*" element={<Navigate to="/not-found" />} />
           </Route>

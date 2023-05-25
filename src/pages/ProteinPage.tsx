@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import "./ProteinPage.css"
 import { Box, Tab, Tabs } from "@mui/material"
 import Typography from '@mui/material/Typography'
+import { ReferenceCard } from "../components/ReferenceCard"
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -44,7 +45,7 @@ export const ProteinPage = () => {
     const [proteinInfo, setProteinInfo] = useState<ProteinInfo>();
     const [value, setValue] = useState(0);
 
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
 
@@ -102,7 +103,9 @@ export const ProteinPage = () => {
                 Item Two
             </TabPanel>
             <TabPanel value={value} index={2}>
-                Item Three
+                <div className="cardsContainer">
+                    {proteinInfo?.references.map(item => <ReferenceCard key={item.id} item={item} />)}
+                </div>
             </TabPanel>
         </div>
     )

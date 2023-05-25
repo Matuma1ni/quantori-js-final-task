@@ -1,0 +1,26 @@
+.cardContainer {
+    max-width: 100%;
+    background: #F5F6F8;
+    border-radius: 12px;
+    padding: 14px 23px 10px 23px;
+    margin-bottom: 15px;
+}
+.cardTitle {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    color: #2B2B2B;
+
+}
+.authorsContainer {
+    height: 40px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    width: 100%;
+    text-decoration-line: underline;
+    color: #2B2B2B;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

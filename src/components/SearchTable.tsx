@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react"
 import './SearchTable.css'
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled, tableCellClasses } from "@mui/material";
 import { Protein } from "../models/protein";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { createPolymersObject } from "../helpers/proteinMappingHelper";
 
 interface Props {
@@ -89,7 +89,7 @@ export const SearchTable: FC<Props> = ({ startRow }) => {
                                     <TableCell component="th" scope="row">
                                         {row.index}
                                     </TableCell>
-                                    <TableCell align="left"><Link to={`/polymer/${row.entry}`}>{row.entry}</Link></TableCell>
+                                    <TableCell align="left"><Link to={`/protein/${row.entry}`}>{row.entry}</Link></TableCell>
                                     <TableCell align="left">{row.entryNames}</TableCell>
                                     <TableCell align="left">{row.genes}</TableCell>
                                     <TableCell align="center">{row.organism}</TableCell>
