@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom"
 import { ProteinInfo } from "../models/protein"
 import { createPolymerInfoObject } from "../helpers/proteinMappingHelper"
-import { useEffect, useState } from "react"
+import { DOMAttributes, useEffect, useState } from "react"
 import "./ProteinPage.css"
 import { Box, Tab, Tabs } from "@mui/material"
 import Typography from '@mui/material/Typography'
 import { ReferenceCard } from "../components/ReferenceCard"
+import ProtvistaUniprot from "protvista-uniprot/src"
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -13,7 +14,7 @@ interface TabPanelProps {
     value: number;
   }
   
-  function TabPanel(props: TabPanelProps) {
+function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
   
     return (
@@ -31,14 +32,24 @@ interface TabPanelProps {
         )}
       </div>
     );
-  }
+}
   
-  function a11yProps(index: number) {
+function a11yProps(index: number) {
     return {
       id: `simple-tab-${index}`,
       'aria-controls': `simple-tabpanel-${index}`,
     };
+}
+
+type CustomElement<T> = Partial<T & DOMAttributes<T> & { children: any }>;
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      ['protvista-uniprot']: CustomElement<ProtvistaUniprot>;
+    }
   }
+}
 
 export const ProteinPage = () => {
     const { id } = useParams();
@@ -100,7 +111,10 @@ export const ProteinPage = () => {
                 <div className="sequenceContainer">{proteinInfo?.sequence}</div>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                Item Two
+                <div className="uniprotWidgetContainer">
+                {/* @ts-ignore */}
+                    <protvista-uniprot accession={id!} />
+                </div>
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <div className="cardsContainer">

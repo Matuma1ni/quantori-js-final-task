@@ -10,3 +10,13 @@
     line-height: 22px;
     color: #2B2B2B;
 }
+.organismContainer {
+    padding: 3px 20px;
+    display: inline-block;
+    background: #D8E7FF;
+    border-radius: 12px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    color: #2B2B2B; 
+}

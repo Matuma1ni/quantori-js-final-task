@@ -11,6 +11,10 @@
   </head>
   <body>
     <div id="root"></div>
+    <script type="module">
+      import ProtvistaUniprot from 'protvista-uniprot';
+      window.customElements.define('protvista-uniprot', ProtvistaUniprot);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

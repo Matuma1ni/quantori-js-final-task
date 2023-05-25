@@ -92,7 +92,7 @@ export const SearchTable: FC<Props> = ({ startRow }) => {
                                     <TableCell align="left"><Link to={`/protein/${row.entry}`}>{row.entry}</Link></TableCell>
                                     <TableCell align="left">{row.entryNames}</TableCell>
                                     <TableCell align="left">{row.genes}</TableCell>
-                                    <TableCell align="center">{row.organism}</TableCell>
+                                    <TableCell align="center"><div className="organismContainer">{row.organism}</div></TableCell>
                                     <TableCell align="left">{row.subcellularLocation}</TableCell>
                                     <TableCell align="left">{row.length}</TableCell>
                                 </TableRow>

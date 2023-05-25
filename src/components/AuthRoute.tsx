@@ -11,7 +11,7 @@ interface Props {
 export const AuthRoute: FC<Props> = ({ children }) => {
     //const [user, loading, error] = useAuthState(auth);
     const [user, loading] = useAuthState(auth);
-
+    
     if (loading) {
         return <></>;
     }
