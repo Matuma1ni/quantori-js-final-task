@@ -1,0 +1,19 @@
+.titleHeader {
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 44px;
+}
+.initialPageForm {
+    font-family: 'Open Sans', sans-serif;
+    font-style: normal;
+    text-align: left;
+    width: 50%;
+    margin-top: calc(50% - 200px);
+    margin-left: calc(50% - 200px);
+}
+.initPageText {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    color: #616161;
+}
