@@ -45,7 +45,12 @@
     line-height: 16px;
     color: #2B2B2B;
 }
+.detailsContainer {
+    margin: -24px 0px 0px -24px;
+}
 .detailsHeader {
+    margin-top: 24px;
+    margin-bottom: 8px;
     font-weight: 600;
     font-size: 16px;
     line-height: 22px;
@@ -57,7 +62,12 @@
     color: #2B2B2B;
     width: 35%;
 }
+.tableData {
+    margin-top: 0px;
+    padding-top: 0px;
+}
 .sequenceContainer {
+    padding: 12px 12px;
     width: 100%;
     background: #F2F2F2;
     border-radius: 8px;

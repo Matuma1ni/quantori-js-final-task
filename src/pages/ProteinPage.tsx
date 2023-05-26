@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 import { ProteinInfo } from "../models/protein"
 import { createPolymerInfoObject } from "../helpers/proteinMappingHelper"
 import { DOMAttributes, useEffect, useState } from "react"
@@ -13,6 +13,18 @@ interface TabPanelProps {
     index: number;
     value: number;
   }
+
+const valueToTabs = [
+    "details",
+    "feature_viewer",
+    "publications"
+]
+
+const tabsToValue:Record<string, number> = {
+    "details": 0,
+    "feature_viewer": 1,
+    "publications": 2,
+}
   
 function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
@@ -54,10 +66,27 @@ declare global {
 export const ProteinPage = () => {
     const { id } = useParams();
     const [proteinInfo, setProteinInfo] = useState<ProteinInfo>();
-    const [value, setValue] = useState(0);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const value = tabsToValue[searchParams.get("tab") ?? "details"]
+
+    useEffect(() => {
+        if (searchParams.get("tab")) {
+
+        } else {
+            setSearchParams(searchParams => {
+                searchParams.set("tab", "details")
+                return searchParams
+            })
+        }
+    }, [])
+    
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
+        setSearchParams(searchParams => {
+            searchParams.set("tab", valueToTabs[newValue])
+            return searchParams
+        })
     };
 
     useEffect(() => {
@@ -89,26 +118,28 @@ export const ProteinPage = () => {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
+                <div className="detailsContainer">
                 <h3 className="detailsHeader">Sequence</h3>
                 <table className="detailsTable">
                     <tr>
                         <td>
-                            <p>Length<br />{proteinInfo?.length}</p>
+                            <p className="tableData">Length<br />{proteinInfo?.length}</p>
                         </td>
                         <td>
-                            <p>Last updated<br />{proteinInfo?.lastUpdated}</p>
+                            <p className="tableData">Last updated<br />{proteinInfo?.lastUpdated}</p>
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            <p>Mass (Da)<br />{proteinInfo?.mass}</p>
+                        <td >
+                            <p className="tableData">Mass (Da)<br />{proteinInfo?.mass}</p>
                         </td>
-                        <td>
-                            <p>Checksum<br />{proteinInfo?.checksum}</p>
+                        <td >
+                            <p className="tableData">Checksum<br />{proteinInfo?.checksum}</p>
                         </td>
                     </tr>
                 </table>
                 <div className="sequenceContainer">{proteinInfo?.sequence}</div>
+                </div>
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <div className="uniprotWidgetContainer">
