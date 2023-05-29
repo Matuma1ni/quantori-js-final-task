@@ -1,4 +1,6 @@
 .cardContainer {
+    font-family: 'Open Sans';
+    font-style: normal;
     max-width: 100%;
     background: #F5F6F8;
     border-radius: 12px;
@@ -13,7 +15,7 @@
 
 }
 .authorsContainer {
-    height: 40px;
+    max-height: 40px;
     font-weight: 400;
     font-size: 14px;
     line-height: 19px;
@@ -32,4 +34,12 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
       }
+}
+.featureHeader {
+    color: #6C6C6C;
+}
+.buttonsContainer {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
 }

@@ -95,7 +95,6 @@ export const ProteinPage = () => {
         async function fetch() {
             const respProtein: ProteinInfo = await createPolymerInfoObject(id!);
             setProteinInfo(respProtein);
-            console.log(respProtein);
         }
         fetch();
     }, [])
