@@ -1,0 +1,12 @@
+.searchPageContainer {
+    text-align: left;
+    margin-left: 6.5vw;
+    width: 82.5vw;
+}
+.searchTableHeader {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    color: #2B2B2B;
+}
