@@ -3,10 +3,12 @@ import { ProteinInfo } from "../models/protein"
 import { createPolymerInfoObject } from "../helpers/proteinMappingHelper"
 import { DOMAttributes, useEffect, useState } from "react"
 import "./ProteinPage.css"
-import { Box, Tab, Tabs } from "@mui/material"
+import { Box,IconButton, Tab, Tabs } from "@mui/material"
+import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import Typography from '@mui/material/Typography'
 import { ReferenceCard } from "../components/ReferenceCard"
-import ProtvistaUniprot from "protvista-uniprot/src"
+// @ts-ignore
+import ProtvistaUniprot from "protvista-uniprot"
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -138,6 +140,23 @@ export const ProteinPage = () => {
                         </td>
                     </tr>
                 </table>
+                <IconButton 
+                    onClick={() => {navigator.clipboard.writeText(proteinInfo?.sequence!)}}
+                    sx={{
+                    display: "flex",
+                    borderRadius: "8px",
+                    color: "#000000",
+                    fontSize: "12px",
+                    marginLeft: "auto",
+                    marginBottom: "6px", 
+                    marginTop: "-32px",               
+                    }}>
+                    <ContentCopyOutlinedIcon sx={{
+                    width: "16px",
+                    height: "16px",
+                }}/>
+                    <span> Copy </span>
+                </IconButton>
                 <div className="sequenceContainer">{proteinInfo?.sequence}</div>
                 </div>
             </TabPanel>

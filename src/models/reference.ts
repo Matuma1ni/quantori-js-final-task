@@ -1,6 +1,6 @@
 export interface Reference {
     id: number,
-    authors: [],
+    authors: string,
     title: string,
     citedFor: string,
 }

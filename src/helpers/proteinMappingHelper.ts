@@ -22,7 +22,11 @@ function extractCellularLocation(resultJson: any) {
 function createReferencesList(references: any[]): Reference[] {
     return references.map((reference: any) => ({
         id: reference.citation.id,
-        authors: reference.citation.authors,
+        authors: ((reference.citation.authors)
+            ? ((reference.citation.authors.length > 1)
+                ? reference.citation.authors.join(', ')
+                : reference.citation.authors[0])
+            : "unknown"),
         title: reference.citation.title,
         citedFor: ((reference.referencePositions)
             ? ((reference.referencePositions.length > 1)

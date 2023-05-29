@@ -68,7 +68,7 @@
 }
 .sequenceContainer {
     padding: 12px 12px;
-    width: 100%;
+    width: calc(100% - 24px);
     background: #F2F2F2;
     border-radius: 8px;
     word-wrap: break-word;

@@ -10,7 +10,7 @@ export const ReferenceCard: FC<Props> = ({item}) => {
     return (
         <div className="cardContainer">
             <h3 className="cartTitle">{item.title}</h3>
-            <div className="authorsContainer">{item.authors.join(', ')}</div>
+            <div className="authorsContainer">{item.authors}</div>
             <p>Cited for: {item.citedFor}</p>
         </div>
     )
