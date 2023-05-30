@@ -1,5 +1,5 @@
 import { Protein, ProteinInfo } from "../models/protein"
-import { getProteinInfo, searchProteins } from "../clients/uniProtClient"
+import { getNextProteins, getProteinInfo, searchProteins } from "../clients/uniProtClient"
 import { Reference, doi } from "../models/reference"
 
 function extractGenes(resultJson: any) {
@@ -73,16 +73,23 @@ function createReferencesList(references: any[], source: string): Reference[] {
     }));
 }
 
-export async function createPolymersObject(searchQuery: string): Promise<Protein[]> {
-    const data = await searchProteins(searchQuery);
-    return data.map((result: any) => ({
-        entry: result.primaryAccession,
-        entryNames: result.uniProtkbId,
-        genes: extractGenes(result),
-        organism: result.organism.scientificName,
-        subcellularLocation: extractCellularLocation(result) ?? [],
-        length: result.features.find((feature: any) => feature.type === 'Chain').location.end.value as number,
-    }))
+export async function createPolymersObject(searchQuery: string): Promise<{ proteins: Protein[], totalNumber: number, nextURL: string | null }> {
+    const promise = searchQuery.startsWith("http")
+        ? getNextProteins(searchQuery)
+        : searchProteins(searchQuery);
+    const {data, totalResults, link} = await promise;
+    return {
+        proteins: data.map((result: any) => ({
+            entry: result.primaryAccession,
+            entryNames: result.uniProtkbId,
+            genes: extractGenes(result),
+            organism: result.organism.scientificName,
+            subcellularLocation: extractCellularLocation(result) ?? [],
+            length: result.sequence.length
+        })),
+        totalNumber: totalResults,
+        nextURL: link,
+    }
 }
 
 export async function createPolymerInfoObject(polymerEntry: string): Promise<ProteinInfo> {

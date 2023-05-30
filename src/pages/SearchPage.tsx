@@ -53,7 +53,7 @@ export const SearchPage = () => {
                 </IconButton>
             </div>
             {searchState ? (
-                <SearchTable startRow={startRow} />
+                <SearchTable />
             ) : (
                 <div className="searchPagePlaceHolder"> No data to display<br />Please start search to display results</div>
             )}
