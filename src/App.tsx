@@ -1,7 +1,7 @@
 import React from "react"
 import "./App.css"
 import backgroundImage from "./assets/mainBackground.png"
-import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Navigate, Outlet, Route, Routes} from "react-router-dom"
 import { InitialPage } from "./pages/InitialPage"
 import { NotFoundPage } from "./pages/NotFoundPage"
 import { Header } from "./components/Header"
@@ -9,8 +9,11 @@ import { AuthPage } from "./pages/AuthPage"
 import { AuthRoute } from "./components/AuthRoute"
 import { NotAuthRoute } from "./components/NotAuthRoute"
 import { SearchPage } from "./pages/SearchPage"
+import { ProteinPage } from "./pages/ProteinPage"
+
 
 const App = () => {
+
   return (
     <React.StrictMode>
       <BrowserRouter>
@@ -21,6 +24,7 @@ const App = () => {
           </Route>
           <Route path="/" element={<MainLayout />}>
             <Route path="/search" element={<AuthRoute><SearchPage /></AuthRoute>} />
+            <Route path="/protein/:id" element={<AuthRoute><ProteinPage /></AuthRoute>} />
             <Route path="/not-found" element={<NotFoundPage />} />
             <Route path="*" element={<Navigate to="/not-found" />} />
           </Route>

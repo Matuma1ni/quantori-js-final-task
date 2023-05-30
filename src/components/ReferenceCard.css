@@ -1,0 +1,45 @@
+.cardContainer {
+    font-family: 'Open Sans';
+    font-style: normal;
+    max-width: 100%;
+    background: #F5F6F8;
+    border-radius: 12px;
+    padding: 14px 23px 10px 23px;
+    margin-bottom: 15px;
+}
+.cardTitle {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+    color: #2B2B2B;
+
+}
+.authorsContainer {
+    max-height: 40px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    width: 100%;
+    text-decoration-line: underline;
+    color: #2B2B2B;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+
+    @supports (-webkit-line-clamp: 2) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: initial;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+}
+.featureHeader {
+    color: #6C6C6C;
+}
+.buttonsContainer {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+}

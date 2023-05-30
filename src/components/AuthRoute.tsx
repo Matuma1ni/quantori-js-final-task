@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-extra-non-null-assertion */
 import { useAuthState } from "react-firebase-hooks/auth"
 import { Navigate } from "react-router-dom"
 import { auth } from "../authConfig"
@@ -9,7 +10,11 @@ interface Props {
 
 export const AuthRoute: FC<Props> = ({ children }) => {
     //const [user, loading, error] = useAuthState(auth);
-    const [user] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
+    
+    if (loading) {
+        return <></>;
+    }
 
     if (!user) {
         return <Navigate to="/" />;
