@@ -1,8 +1,7 @@
-import {  useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import './SearchTable.css'
-import {  Typography, styled, tableCellClasses } from "@mui/material";
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import { QueryClient, QueryClientProvider, useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { Protein } from "../models/protein";
 import { Link, useSearchParams } from "react-router-dom";
 import { createPolymersObject } from "../helpers/proteinMappingHelper";
@@ -11,64 +10,59 @@ const columns: MRT_ColumnDef<Protein>[] = [
     {
         accessorKey: 'entry',
         header: 'Entry',
+        minSize: 70,
+        size: 84,
+        maxSize: 90,
+        Cell: ({ cell }) => {
+            return (
+                <Link to={`/protein/${cell.getValue<string>()}`}>{cell.getValue<string>()}</Link>
+            )
+        }
     },
     {
         accessorKey: 'entryNames',
         header: 'Entry Names',
+        minSize: 120,
+        size: 135,
     },
     {
         accessorKey: 'genes',
         header: 'Genes',
+        minSize: 120,
+        size: 135,
     },
     {
         accessorKey: 'organism',
         header: 'Organism',
+        size: 135,
+        Cell: ({ cell }) => {
+            return (
+                <div className="organismContainer">{cell.getValue<string>()}</div>
+            )
+        }
     },
     {
         accessorKey: 'subcellularLocation',
         header: 'Subcellular Location',
+        minSize: 80,
+        size: 170,
     },
     {
         accessorKey: 'length',
         header: 'Length (AA)',
+        minSize: 80,
+        size: 100,
     },
 ];
 
-const fetchSize = 25;
-
 export const SearchTable = () => {
-    const [proteins, setProteins] = useState<Protein[]>([]);
-    const [totalNumber, setTotalNumber] = useState(0);
-    const [nextURL, setNextURL] = useState('');
     const [searchParams] = useSearchParams();
     const tableContainerRef = useRef<HTMLDivElement>(null);
     const rowVirtualizerInstanceRef = useRef(null);
 
-    function createData(
-        index: number,
-        entry: string,
-        entryNames: string,
-        genes: string,
-        organism: string,
-        subcellularLocation: string,
-        length: number,
-    ) {
-        return { index, entry, entryNames, genes, organism, subcellularLocation, length };
-    }
+    const searchQuery = searchParams.get("query") as string;
 
-    const searchQuery = searchParams.get("query") as string
-
-    const rows = proteins.map((protein: Protein, index) => createData(
-        (index + 1),
-        protein.entry,
-        protein.entryNames,
-        protein.genes.join(', '),
-        protein.organism,
-        protein.subcellularLocation.join(', '),
-        protein.length
-    ));
-
-    const { data, fetchNextPage, isError, isFetching, isLoading } =
+    const { data, fetchNextPage, isError, isFetching, isLoading, refetch } =
         useInfiniteQuery({
             queryKey: ['table-data'],
             queryFn: async ({ pageParam = null }) => {
@@ -85,6 +79,12 @@ export const SearchTable = () => {
             refetchOnWindowFocus: false,
         });
 
+    useEffect(() => {
+        refetch({
+            
+        });
+    }, [searchQuery]);
+
     const flatData = useMemo(
         () => data?.pages.flatMap((page) => page.proteins) ?? [],
         [data],
@@ -98,7 +98,6 @@ export const SearchTable = () => {
         (containerRefElement: HTMLDivElement | null) => {
             if (containerRefElement) {
                 const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
-                console.log("fetching");
                 //once the user has scrolled within 400px of the bottom of the table, fetch more data if we can
                 if (
                     scrollHeight - scrollTop - clientHeight < 400 &&
@@ -125,18 +124,40 @@ export const SearchTable = () => {
                 <h3 className="searchTableHeader">{totalDBRowCount} Search Results</h3>
             )}
             <MaterialReactTable columns={columns}
+                muiTablePaperProps={{ sx: { boxShadow: "none" } }}
+                muiTableHeadRowProps={{ sx: { boxShadow: "none" } }}
+                displayColumnDefOptions={{
+                    'mrt-row-numbers': {
+                        size: 12,
+                        maxSize: 12,
+                    }
+                }}
                 data={flatData}
                 enablePagination={false}
                 enableRowNumbers
-                enableRowVirtualization //optional, but recommended if it is likely going to be more than 100 rows
-                manualFiltering
-                manualSorting
+                enableTopToolbar={false}
+                enableColumnActions={false}
+                enableBottomToolbar={false}
+                enableRowVirtualization
+                enableColumnOrdering={false}
+                enableRowOrdering={false}
+                enableSorting={false}
                 muiTableContainerProps={{
-                    ref: tableContainerRef, //get access to the table container element
-                    sx: { maxHeight: '600px' }, //give the table a max height
+                    ref: tableContainerRef,
+                    sx: { maxHeight: '72vh', width: "100%", borderRadius: "8px" },
                     onScroll: (
                         event, //add an event listener to the table container element
                     ) => fetchMoreOnBottomReached(event.target as HTMLDivElement),
+                }}
+                muiTableHeadCellProps={{
+                    sx: {
+                        padding: "12px 6px 12px 14px",
+                        backgroundColor: "#F5F5F5",
+                        margin: "0px 1px",
+                    }
+                }}
+                muiTableBodyCellProps={{
+                    sx: { padding: "14px 6px 14px 14px" }
                 }}
                 muiToolbarAlertBannerProps={
                     isError
@@ -146,18 +167,14 @@ export const SearchTable = () => {
                         }
                         : undefined
                 }
-                renderBottomToolbarCustomActions={() => (
-                    <Typography>
-                        Fetched {totalFetched} of {totalDBRowCount} total rows.
-                    </Typography>
-                )}
                 state={{
                     isLoading,
                     showAlertBanner: isError,
                     showProgressBars: isFetching,
                 }}
                 rowVirtualizerInstanceRef={rowVirtualizerInstanceRef} //get access to the virtualizer instance
-                rowVirtualizerProps={{ overscan: 4 }} />
+                rowVirtualizerProps={{ overscan: 4 }}
+            />
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
+/* import { FC, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import './SearchTable.css'
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled, tableCellClasses } from "@mui/material";
 import { Protein } from "../models/protein";
@@ -110,5 +110,4 @@ export const SearchTable: FC<Props> = () => {
         </div>
     )
 }
-
-//span onClick={handleOnClick} style={{ textDecoration: 'underline', cursor: 'pointer' }}
+*/
