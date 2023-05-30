@@ -1,10 +1,10 @@
 import { linkRegexp } from "../helpers/regexps";
 
-const UniProtUrl = "https://rest.uniprot.org/uniprotkb/search"
+const UniProtUrl = "https://rest.uniprot.org/uniprotkb/search?fields=accession,id,gene_names,organism_name,length,cc_subcellular_location&query="
 const ProteinInfoUrl = "https://rest.uniprot.org/uniprotkb/"
 
 export async function searchProteins(query: string): Promise<any> {
-    const response = await fetch(`${UniProtUrl}?query=${query}`);
+    const response = await fetch(`${UniProtUrl}${query}`);
     const data = (await response.json());
     let link:string | null = null;
     if (response.headers.get("link")) {

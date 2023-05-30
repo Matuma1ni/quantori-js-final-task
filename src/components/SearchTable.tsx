@@ -29,7 +29,16 @@ const columns: MRT_ColumnDef<Protein>[] = [
         accessorKey: 'genes',
         header: 'Genes',
         minSize: 120,
-        size: 135,
+        maxSize: 140,
+        Cell: ({ cell }) => {
+            return (
+                <div className="genesContainer">
+                    {cell.getValue<string[]>().map((el, index) => {
+                        return <span className={index === 0 ? 'firstGene' : 'otherGenes'}>{index === 0 ? el : ', ' + el}</span>
+                    })}
+                </div>
+            )
+        }
     },
     {
         accessorKey: 'organism',
@@ -81,7 +90,7 @@ export const SearchTable = () => {
 
     useEffect(() => {
         refetch({
-            
+
         });
     }, [searchQuery]);
 

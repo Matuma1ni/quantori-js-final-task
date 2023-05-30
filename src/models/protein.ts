@@ -1,7 +1,7 @@
 export interface Protein {
     entry: string,
     entryNames: string,
-    genes: string,
+    genes: string[],
     organism: string,
     subcellularLocation: string,
     length: number,
