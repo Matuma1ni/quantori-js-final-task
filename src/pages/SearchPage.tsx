@@ -4,15 +4,18 @@ import { DisplaySettingsOutlined } from '@mui/icons-material'
 import { useEffect, useRef, useState } from 'react';
 import { SearchTable } from '../components/SearchTable';
 import { useSearchParams } from 'react-router-dom';
+import { Filters } from '../components/Filters';
 
 export const SearchPage = () => {
     const searchRef = useRef<HTMLInputElement>(null)
     const [searchParams, setSearchParams] = useSearchParams();
     const [searchState, setSearchState] = useState('');
+    const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
+
 
     useEffect(() => {
         if (searchParams.has("query")) {
-            const currentQuery = searchParams.get("query")!
+            const currentQuery = decodeURI(searchParams.get("query")!)
             setSearchState(currentQuery);
             searchRef.current!.value = currentQuery;
         }
@@ -20,10 +23,10 @@ export const SearchPage = () => {
 
     const handleOnSearch = () => {
         if (searchRef.current) {
-            if (searchRef.current.value) {
+            if (searchRef.current.value.trim()) {
                 setSearchState(searchRef.current.value);
                 setSearchParams(searchParams => {
-                    searchParams.set("query", searchRef.current!.value);
+                    searchParams.set("query", encodeURI(searchRef.current!.value.trim().toLowerCase()));
                     return searchParams;
                 })
             } else {
@@ -39,7 +42,16 @@ export const SearchPage = () => {
     return (
         <div className="searchPageLayout">
             <div className="searchPageHeader">
-                <input ref={searchRef} placeholder='Enter search value' className="searchInput"></input>
+                <input
+                    ref={searchRef}
+                    onFocus={() => setFiltersVisible(false)}
+                    onKeyUp={(e) => {
+                        if (e.key === "Enter") {
+                            handleOnSearch()
+                        }
+                    }}
+                    placeholder='Enter search value' className="searchInput">
+                </input>
                 <Button onClick={handleOnSearch} sx={{
                     margin: "0px 13px 0px 13px",
                     width: "179px",
@@ -48,17 +60,20 @@ export const SearchPage = () => {
                     borderRadius: "8px",
                     color: "#3C86F4",
                 }}>Search</Button>
-                <IconButton sx={{
-                    display: "inline-block",
-                    width: "40px",
-                    height: "40px",
-                    background: "rgba(60, 134, 244, 0.2)",
-                    borderRadius: "8px",
-                    color: "#3C86F4",
-                }}>
+                <IconButton
+                    onClick={() => setFiltersVisible(!filtersVisible)}
+                    sx={{
+                        display: "inline-block",
+                        width: "40px",
+                        height: "40px",
+                        background: "rgba(60, 134, 244, 0.2)",
+                        borderRadius: "8px",
+                        color: "#3C86F4",
+                    }}>
                     <DisplaySettingsOutlined />
                 </IconButton>
             </div>
+            {(filtersVisible) ? <Filters onClose={() => setFiltersVisible(false)} /> : <></>}
             {searchState ? (
                 <SearchTable />
             ) : (

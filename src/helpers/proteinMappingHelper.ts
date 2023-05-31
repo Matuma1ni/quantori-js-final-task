@@ -13,8 +13,8 @@ function extractGenes(resultJson: any) {
 }
 
 function extractCellularLocation(resultJson: any) {
-    const cellularLocation = resultJson.comments
-        .find((comment: any) => comment.commentType === 'SUBCELLULAR LOCATION')?.subcellularLocations
+    const cellularLocation = resultJson.comments?.
+        find((comment: any) => comment.commentType === 'SUBCELLULAR LOCATION')?.subcellularLocations
         .map((obj: any) => obj.location.value)
     return cellularLocation ?? []
 }
@@ -71,11 +71,19 @@ function createReferencesList(references: any[], source: string): Reference[] {
     }));
 }
 
-export async function createPolymersObject(searchQuery: string): Promise<{ proteins: Protein[], totalNumber: number, nextURL: string | null }> {
+export async function createPolymersObject(searchQuery: string, filtersValues: any): Promise<{ proteins: Protein[], totalNumber: number, nextURL: string | null }> {
+    let filters = "";
+    if (filtersValues) {
+        filters = Object
+            .keys(filtersValues)
+            .map((filterFeature) => (`(${filterFeature}:${filtersValues[filterFeature]})`))
+            .join(" AND ")
+    }
+    console.log("filters:", filters);
     const promise = searchQuery.startsWith("http")
         ? getNextProteins(searchQuery)
-        : searchProteins(searchQuery);
-    const {data, totalResults, link} = await promise;
+        : searchProteins(searchQuery, filters);
+    const { data, totalResults, link } = await promise;
     return {
         proteins: data.map((result: any) => ({
             entry: result.primaryAccession,
