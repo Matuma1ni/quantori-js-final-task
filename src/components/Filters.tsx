@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom"
 import { FiltersValues } from "../models/filterValues"
 import { getFilterOptions } from "../helpers/filterOptionsHelper"
 import { Options, optionObject } from "../models/options"
-import { Menu } from "@mui/icons-material"
+import { fromToRegexp } from "../helpers/regexps"
 
 interface Props {
     onClose: () => void
@@ -26,25 +26,27 @@ export const Filters: FC<Props> = ({ onClose }) => {
 
     useEffect(() => {
         if (searchParams.has("filters")) {
+            let fromValue = "";
+            let toValue = ""
             const currentFilters: FiltersValues = JSON.parse(decodeURI(searchParams.get("filters")!))
-            geneRef.current!.value = currentFilters.gene ?? "";
-            if (currentFilters.organism) {
-                for (let option of organismRef.current!.options) {
-                    option.selected = currentFilters.organism.includes(option.value);
-                }
+            const matches = currentFilters.length?.match(fromToRegexp);
+            if (matches) {
+                fromValue = matches[1] === "*" ? "" : matches[1];
+                toValue = matches[2] === "*" ? "" : matches[2];
             }
-            fromRef.current!.value = currentFilters.from ? currentFilters.from.toString() : "";
-            toRef.current!.value = currentFilters.to ? currentFilters.to.toString() : "";
+            geneRef.current!.value = currentFilters.gene ?? "";
+            if (currentFilters.model_organism) {
+                organismRef.current!.value = currentFilters.model_organism as unknown as string;
+                console.log("organismRef, ", organismRef);
+            }
+            fromRef.current!.value = fromValue ?? "";
+            toRef.current!.value = toValue ?? "";
             if (currentFilters.annotation) {
-                for (let option of annotationRef.current!.options) {
-                    option.selected = currentFilters.annotation.includes(option.value);
-                }
+                annotationRef.current!.value = currentFilters.annotation as unknown as string;
             }
             //annotationRef.current!.value = currentFilters.annotation ?? [];
             if (currentFilters.with) {
-                for (let option of withRef.current!.options) {
-                    option.selected = currentFilters.with.includes(option.value);
-                }
+                withRef.current!.value = currentFilters.with as unknown as string;
             }
             //withRef.current!.value = currentFilters.with ?? [];
         }
@@ -88,21 +90,23 @@ export const Filters: FC<Props> = ({ onClose }) => {
                 || !!withRef.current?.value;
 
             if (hasFilters) {
+                const from = fromRef.current?.value ? parseInt(fromRef.current.value) : undefined;
+                const to = toRef.current?.value ? parseInt(toRef.current.value) : undefined;
                 const filterValues: FiltersValues = {
                     gene: geneRef.current?.value ? geneRef.current?.value : undefined,
-                    organism: organismRef.current && organismRef.current.selectedOptions.length > 0
-                        ? Array.from(organismRef.current.selectedOptions).map(o => o.value)
-                        : undefined,
-                    from: fromRef.current?.value ? parseInt(fromRef.current.value) : undefined,
-                    to: toRef.current?.value ? parseInt(toRef.current.value) : undefined,
-                    annotation: annotationRef.current && annotationRef.current.selectedOptions.length > 0
+                    model_organism: organismRef.current?.value ? organismRef.current?.value as unknown as string[] : undefined,
+                    //organism: organismRef.current && organismRef.current.selectedOptions?.length > 0
+                    //? Array.from(organismRef.current.selectedOptions).map(o => o.value)
+                    //: undefined,
+                    length: (from || to) ? `[${from ?? "*"} TO ${to ?? "*"}]` : undefined,
+                    annotation: annotationRef.current && annotationRef.current.selectedOptions?.length > 0
                         ? Array.from(annotationRef.current.selectedOptions).map(o => o.value)
                         : undefined,
-                    with: withRef.current && withRef.current.selectedOptions.length > 0
+                    with: withRef.current && withRef.current.selectedOptions?.length > 0
                         ? Array.from(withRef.current.selectedOptions).map(o => o.value)
                         : undefined,
                 }
-                console.log(filterValues);
+                console.log(filterValues, organismRef.current?.selectedOptions, organismRef.current?.value);
                 searchParams.set("filters", encodeURI(JSON.stringify(filterValues)));
             } else {
                 searchParams.delete("filters");

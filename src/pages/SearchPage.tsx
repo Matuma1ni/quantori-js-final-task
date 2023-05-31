@@ -42,7 +42,16 @@ export const SearchPage = () => {
     return (
         <div className="searchPageLayout">
             <div className="searchPageHeader">
-                <input ref={searchRef} placeholder='Enter search value' className="searchInput"></input>
+                <input
+                    ref={searchRef}
+                    onFocus={() => setFiltersVisible(false)}
+                    onKeyUp={(e) => {
+                        if (e.key === "Enter") {
+                            handleOnSearch()
+                        }
+                    }}
+                    placeholder='Enter search value' className="searchInput">
+                </input>
                 <Button onClick={handleOnSearch} sx={{
                     margin: "0px 13px 0px 13px",
                     width: "179px",
@@ -52,7 +61,7 @@ export const SearchPage = () => {
                     color: "#3C86F4",
                 }}>Search</Button>
                 <IconButton
-                    onClick={() => setFiltersVisible(true)}
+                    onClick={() => setFiltersVisible(!filtersVisible)}
                     sx={{
                         display: "inline-block",
                         width: "40px",
@@ -64,7 +73,7 @@ export const SearchPage = () => {
                     <DisplaySettingsOutlined />
                 </IconButton>
             </div>
-            {(filtersVisible) ? <Filters onClose={() => setFiltersVisible(false)} /> : <></>}   
+            {(filtersVisible) ? <Filters onClose={() => setFiltersVisible(false)} /> : <></>}
             {searchState ? (
                 <SearchTable />
             ) : (

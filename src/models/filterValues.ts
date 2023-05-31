@@ -1,8 +1,7 @@
 export interface FiltersValues {
     gene?: string,
-    organism?: string[],
-    from?: number,
-    to?: number,
+    model_organism?: string[],
+    length?: string,
     annotation?: string[],
     with?: string[] 
 }

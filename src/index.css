@@ -66,3 +66,11 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.protvista-loader {
+  font-size: 0;
+  background-position-x: center;
+  background: url('./assets/loading_spinner.svg');
+  background-size: 120px 120px;
+  background-repeat: no-repeat;
+}

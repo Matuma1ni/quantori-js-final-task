@@ -70,16 +70,19 @@ export const SearchTable = () => {
     const rowVirtualizerInstanceRef = useRef(null);
 
     const searchQuery = decodeURI(searchParams.get("query") ?? "") as string;
+    const filters = useMemo(() => 
+        searchParams.get("filters") ? JSON.parse(decodeURI(searchParams.get("filters") ?? "")) : "", 
+    [searchParams]);
 
     const { data, fetchNextPage, isError, isFetching, isLoading, refetch } =
         useInfiniteQuery({
             queryKey: ['table-data'],
             queryFn: async ({ pageParam = null }) => {
                 if (pageParam) {
-                    const newProteins = await createPolymersObject(pageParam);
+                    const newProteins = await createPolymersObject(pageParam, filters);
                     return newProteins;
                 } else {
-                    const newProteins = await createPolymersObject(searchQuery);
+                    const newProteins = await createPolymersObject(searchQuery, filters);
                     return newProteins;
                 }
             },
@@ -92,7 +95,7 @@ export const SearchTable = () => {
         refetch({
 
         });
-    }, [searchQuery]);
+    }, [searchQuery, filters]);
 
     const flatData = useMemo(
         () => data?.pages.flatMap((page) => page.proteins) ?? [],
