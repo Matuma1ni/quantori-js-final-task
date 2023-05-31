@@ -69,7 +69,7 @@ export const SearchTable = () => {
     const tableContainerRef = useRef<HTMLDivElement>(null);
     const rowVirtualizerInstanceRef = useRef(null);
 
-    const searchQuery = searchParams.get("query") as string;
+    const searchQuery = decodeURI(searchParams.get("query") ?? "") as string;
 
     const { data, fetchNextPage, isError, isFetching, isLoading, refetch } =
         useInfiniteQuery({

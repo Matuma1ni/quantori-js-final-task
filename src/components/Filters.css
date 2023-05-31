@@ -1,0 +1,37 @@
+.filtersContainer {
+    background-color: white;
+    width: 335px;
+    position: absolute;
+    z-index: 3;
+    top: 127px;
+    right: calc(10vw - 6px);
+    border: 1px solid #D9D9D9;
+    border-radius: 12px;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 25px;
+}
+.filtersHeader {
+    margin: 12px 0px 21px 5%;
+    text-align: left;
+}
+.filterHeader {
+    text-align: left;
+    margin: 0px 0px 1px 5%;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    color: #2B2B2B;
+}
+.rangeLine {
+    width: 29.5px;
+    height: 0px;
+    border: 1px solid #9F9F9F;
+    margin-bottom: 15px;
+}
+.buttonsContainer {
+    margin-top: 35px;
+    margin-bottom: 13px;
+}
