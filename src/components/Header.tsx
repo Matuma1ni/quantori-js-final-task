@@ -18,7 +18,7 @@ export const Header = () => {
                 <Box sx={{ flexGrow: 1 }} />
                 <Stack direction="row" spacing={2} sx={{marginRight: "10%"}}>
                     <p>{user?.email}</p>
-                    <Button onClick={logout} sx={{ color: 'grey', backgroundColor: 'white' }}>Log out</Button>
+                    <Button onClick={logout} sx={{ color: 'grey', backgroundColor: 'white', textTransform: "none" }}>Log out</Button>
                 </Stack>
             </Toolbar>
         </AppBar>

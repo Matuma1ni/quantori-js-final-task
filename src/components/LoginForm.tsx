@@ -22,8 +22,8 @@ export const LoginForm: FC<Props> = ({ onClickSignup }) => {
         _,
         __,
         loginError,
-      ] = useSignInWithEmailAndPassword(auth);
-    
+    ] = useSignInWithEmailAndPassword(auth);
+
     const [disablingButton, setDisablingButton] = useState(true)
 
     useEffect(() => {
@@ -35,26 +35,26 @@ export const LoginForm: FC<Props> = ({ onClickSignup }) => {
                 setPasswordError(error.message)
             }
         }
-    }, [loginError])  
+    }, [loginError])
 
     const handleClickSignup = () => {
         onClickSignup();
     }
 
-    const handleLogin = () => {  
+    const handleLogin = () => {
         if (emailRef.current && passwordRef.current) {
             const emailValid = emailRegexp.test(emailRef.current.value);
             if (passwordRef.current.value.length < 6) {
                 console.log('Please, provide a password')
                 setPasswordError('Please, provide a password')
-                return 
+                return
             }
             if (!emailValid) {
                 console.log('Please, provide valid email')
                 setEmailError('Please, provide valid email')
-                return 
+                return
             }
-            signInWithEmailAndPassword(emailRef.current.value, passwordRef.current.value); 
+            signInWithEmailAndPassword(emailRef.current.value, passwordRef.current.value);
         }
     }
 
@@ -69,7 +69,7 @@ export const LoginForm: FC<Props> = ({ onClickSignup }) => {
     function handleInput() {
         setDisablingButton(!emailRef.current?.value || !passwordRef.current?.value);
     }
-    
+
 
     //<input ref={emailRef} className="formInput" placeholder="Enter your email"></input>
     //<input type="password" ref={passwordRef} className="formInput" placeholder="Enter your password"></input>
@@ -91,7 +91,11 @@ export const LoginForm: FC<Props> = ({ onClickSignup }) => {
                 <h4 className="formHeader">Password</h4>
                 <PasswordInput onInputEnableButton={handleInput} onFocusResetError={handlePasswordFocus} error={passwordError} inputRef={passwordRef} />
             </div>
-            <Button onClick={handleLogin} disabled={disablingButton} sx={{ width: "86.6%", background: "#D8E7FF", borderRadius: "12px", color: "#175BC0", fontWeight: "700" }}>Login</Button>
+            <Button
+                onClick={handleLogin}
+                disabled={disablingButton}
+                sx={{ width: "86.6%", background: "#D8E7FF", borderRadius: "12px", color: "#175BC0", fontWeight: "700", textTransform: "none" }}
+            >Login</Button>
             <p className="loginFooter">Don’t have an account?
                 <span onClick={handleClickSignup} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Sign up </span>
             </p>
