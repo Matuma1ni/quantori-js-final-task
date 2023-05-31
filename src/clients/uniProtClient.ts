@@ -4,9 +4,9 @@ const UniProtUrl = "https://rest.uniprot.org/uniprotkb/search?fields=accession,i
 const ProteinInfoUrl = "https://rest.uniprot.org/uniprotkb/"
 const OptionsURL = "https://rest.uniprot.org/uniprotkb/search?facets=model_organism,proteins_with,annotation_score&query="
 
-export async function searchProteins(query: string, filters: string): Promise<any> {
-    console.log("query:", encodeURI(`${UniProtUrl}(${query})${filters ? " AND "+filters : ""}`));
-    const response = await fetch(encodeURI(`${UniProtUrl}(${query})${filters ? " AND "+filters : ""}`));
+export async function searchProteins(query: string, filters: string, sort: string|null): Promise<any> {
+    console.log("query:", encodeURI(`${UniProtUrl}(${query})${filters ? " AND "+filters : ""}${sort ? "&sort="+sort : ""}`));
+    const response = await fetch(encodeURI(`${UniProtUrl}(${query})${filters ? " AND "+filters : ""}${sort ? "&sort="+sort : ""}`));
     const data = (await response.json());
     let link:string | null = null;
     if (response.headers.get("link")) {

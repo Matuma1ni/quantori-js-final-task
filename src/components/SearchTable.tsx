@@ -62,11 +62,19 @@ export const SearchTable = () => {
                     )
                 },
                 Header: ({ column, header }) => {
+                    let color: string|undefined = undefined;
+                    let direction: string|undefined = undefined;
+                    if (sortField === header.id) {
+                        color = "#3C86F4";   
+                        if (sortDirection === "asc") {
+                            direction = "rotate(180deg)";
+                        }
+                    } 
                     return (
                         <div className="headerCell">
                             <p>{column.columnDef.header}</p>
                             <IconButton 
-                                sx={{ width: "24px", height: "24px" }}
+                                sx={{ width: "24px", height: "24px", color: color, transform: direction }}
                                 onClick={() => handleSort(header.id)}
                             >
                                 <FilterListIcon />
@@ -81,11 +89,19 @@ export const SearchTable = () => {
                 minSize: 120,
                 size: 135,
                 Header: ({ column, header }) => {
+                    let color: string|undefined = undefined;
+                    let direction: string|undefined = undefined;
+                    if (sortField === header.id) {
+                        color = "#3C86F4";   
+                        if (sortDirection === "asc") {
+                            direction = "rotate(180deg)";
+                        }
+                    } 
                     return (
                         <div className="headerCell">
                             <p>{column.columnDef.header}</p>
                             <IconButton 
-                                sx={{ width: "24px", height: "24px" }}
+                                sx={{ width: "24px", height: "24px", color: color, transform: direction }}
                                 onClick={() => handleSort(header.id)}
                             >
                                 <FilterListIcon />
@@ -109,12 +125,20 @@ export const SearchTable = () => {
                     )
                 },
                 Header: ({ column, header }) => {
+                    let color: string|undefined = undefined;
+                    let direction: string|undefined = undefined;
+                    if (sortField === header.id) {
+                        color = "#3C86F4";   
+                        if (sortDirection === "asc") {
+                            direction = "rotate(180deg)";
+                        }
+                    } 
                     return (
                         <div className="headerCell">
                             <p>{column.columnDef.header}</p>
                             <IconButton 
                                 onClick={() => handleSort(header.id)}
-                                sx={{ width: "24px", height: "24px" }}
+                                sx={{ width: "24px", height: "24px", color: color, transform: direction }}
                             >
                                 <FilterListIcon />
                             </IconButton>
@@ -132,12 +156,20 @@ export const SearchTable = () => {
                     )
                 },
                 Header: ({ column, header }) => {
+                    let color: string|undefined = undefined;
+                    let direction: string|undefined = undefined;
+                    if (sortField === header.id) {
+                        color = "#3C86F4";   
+                        if (sortDirection === "asc") {
+                            direction = "rotate(180deg)";
+                        }
+                    } 
                     return (
                         <div className="headerCell">
                             <p>{column.columnDef.header}</p>
                             <IconButton
                                 onClick={() => handleSort(header.id)}
-                                sx={{ width: "24px", height: "24px" }}
+                                sx={{ width: "24px", height: "24px", color: color, transform: direction }}
                             >
                                 <FilterListIcon />
                             </IconButton>
@@ -164,11 +196,19 @@ export const SearchTable = () => {
                 minSize: 80,
                 size: 100,
                 Header: ({ column, header }) => {
+                    let color: string|undefined = undefined;
+                    let direction: string|undefined = undefined;
+                    if (sortField === header.id) {
+                        color = "#3C86F4";   
+                        if (sortDirection === "asc") {
+                            direction = "rotate(180deg)";
+                        }
+                    } 
                     return (
                         <div className="headerCell">
                             <p>{column.columnDef.header}</p>
                             <IconButton 
-                                sx={{ width: "24px", height: "24px" }}
+                                sx={{ width: "24px", height: "24px", color: color, transform: direction }}
                                 onClick={() => handleSort(header.id)}
                             >
                                 <FilterListIcon />
@@ -191,10 +231,10 @@ export const SearchTable = () => {
             queryKey: ['table-data'],
             queryFn: async ({ pageParam = null }) => {
                 if (pageParam) {
-                    const newProteins = await createPolymersObject(pageParam, filters);
+                    const newProteins = await createPolymersObject(pageParam, filters, sortField, sortDirection);
                     return newProteins;
                 } else {
-                    const newProteins = await createPolymersObject(searchQuery, filters);
+                    const newProteins = await createPolymersObject(searchQuery, filters, sortField, sortDirection);
                     return newProteins;
                 }
             },
@@ -207,7 +247,7 @@ export const SearchTable = () => {
         refetch({
 
         });
-    }, [searchQuery, filters, sortField]);
+    }, [searchQuery, filters, sortField, sortDirection]);
 
     const flatData = useMemo(
         () => data?.pages.flatMap((page) => page.proteins) ?? [],
@@ -217,12 +257,10 @@ export const SearchTable = () => {
     const totalDBRowCount = data?.pages?.[0]?.totalNumber ?? 0;
     const totalFetched = flatData.length;
 
-    //called on scroll and possibly on mount to fetch more data as the user scrolls and reaches bottom of table
     const fetchMoreOnBottomReached = useCallback(
         (containerRefElement: HTMLDivElement | null) => {
             if (containerRefElement) {
                 const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
-                //once the user has scrolled within 400px of the bottom of the table, fetch more data if we can
                 if (
                     scrollHeight - scrollTop - clientHeight < 400 &&
                     !isFetching &&
@@ -235,7 +273,6 @@ export const SearchTable = () => {
         [fetchNextPage, isFetching, totalFetched, totalDBRowCount],
     );
 
-    //a check on mount to see if the table is already scrolled to the bottom and immediately needs to fetch more data
     useEffect(() => {
         fetchMoreOnBottomReached(tableContainerRef?.current);
     }, [fetchMoreOnBottomReached]);

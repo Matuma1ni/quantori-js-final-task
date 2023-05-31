@@ -3,12 +3,12 @@ import { getNextProteins, getProteinInfo, searchProteins } from "../clients/uniP
 import { Reference, doi } from "../models/reference"
 
 function extractGenes(resultJson: any) {
-    const gene = resultJson.genes[0]
+    const gene = resultJson.genes ? resultJson.genes[0] : "";
     if (gene.synonyms) {
         const polyNames = [gene.geneName.value, ...gene.synonyms.map((synonym: any) => synonym.value)].flat()
         return polyNames
     } else {
-        return [gene.geneName.value]
+        return [gene.geneName?.value]
     }
 }
 
@@ -71,18 +71,22 @@ function createReferencesList(references: any[], source: string): Reference[] {
     }));
 }
 
-export async function createPolymersObject(searchQuery: string, filtersValues: any): Promise<{ proteins: Protein[], totalNumber: number, nextURL: string | null }> {
+export async function createPolymersObject(searchQuery: string, filtersValues: any, sortField: string, sortDirection: string|null): Promise<{ proteins: Protein[], totalNumber: number, nextURL: string | null }> {
     let filters = "";
+    let sortQuery = null;
     if (filtersValues) {
         filters = Object
             .keys(filtersValues)
             .map((filterFeature) => (`(${filterFeature}:${filtersValues[filterFeature]})`))
             .join(" AND ")
     }
-    console.log("filters:", filters);
+    sortQuery = (sortField) 
+        ? `${sortField} ${sortDirection}` 
+        : null;
+    console.log("sort:", sortQuery);
     const promise = searchQuery.startsWith("http")
         ? getNextProteins(searchQuery)
-        : searchProteins(searchQuery, filters);
+        : searchProteins(searchQuery, filters, sortQuery);
     const { data, totalResults, link } = await promise;
     return {
         proteins: data.map((result: any) => ({
