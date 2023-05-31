@@ -41,14 +41,12 @@ export const Filters: FC<Props> = ({ onClose }) => {
             }
             fromRef.current!.value = fromValue ?? "";
             toRef.current!.value = toValue ?? "";
-            if (currentFilters.annotation) {
-                annotationRef.current!.value = currentFilters.annotation as unknown as string;
+            if (currentFilters.annotation_score) {
+                annotationRef.current!.value = currentFilters.annotation_score as unknown as string;
             }
-            //annotationRef.current!.value = currentFilters.annotation ?? [];
-            if (currentFilters.with) {
-                withRef.current!.value = currentFilters.with as unknown as string;
+            if (currentFilters.protein_with) {
+                withRef.current!.value = currentFilters.protein_with as unknown as string;
             }
-            //withRef.current!.value = currentFilters.with ?? [];
         }
     }, [])
 
@@ -83,27 +81,26 @@ export const Filters: FC<Props> = ({ onClose }) => {
     function handleApplyFilters() {
         setSearchParams(searchParams => {
             const hasFilters = !!geneRef.current?.value
-                || !!organismRef.current?.value
+                || (!!organismRef.current?.value && organismRef.current.value.length > 0)
                 || !!fromRef.current?.value
                 || !!toRef.current?.value
-                || !!annotationRef.current?.value
-                || !!withRef.current?.value;
+                || (!!annotationRef.current?.value && annotationRef.current.value.length > 0)
+                || (!!withRef.current?.value && withRef.current.value.length > 0);
 
             if (hasFilters) {
                 const from = fromRef.current?.value ? parseInt(fromRef.current.value) : undefined;
                 const to = toRef.current?.value ? parseInt(toRef.current.value) : undefined;
                 const filterValues: FiltersValues = {
                     gene: geneRef.current?.value ? geneRef.current?.value : undefined,
-                    model_organism: organismRef.current?.value ? organismRef.current?.value as unknown as string[] : undefined,
-                    //organism: organismRef.current && organismRef.current.selectedOptions?.length > 0
-                    //? Array.from(organismRef.current.selectedOptions).map(o => o.value)
-                    //: undefined,
-                    length: (from || to) ? `[${from ?? "*"} TO ${to ?? "*"}]` : undefined,
-                    annotation: annotationRef.current && annotationRef.current.selectedOptions?.length > 0
-                        ? Array.from(annotationRef.current.selectedOptions).map(o => o.value)
+                    model_organism: organismRef.current?.value && organismRef.current.value.length > 0
+                        ? organismRef.current?.value as unknown as string[]
                         : undefined,
-                    with: withRef.current && withRef.current.selectedOptions?.length > 0
-                        ? Array.from(withRef.current.selectedOptions).map(o => o.value)
+                    length: (from || to) ? `[${from ?? "*"} TO ${to ?? "*"}]` : undefined,
+                    annotation_score: annotationRef.current?.value && annotationRef.current.value.length > 0
+                        ? annotationRef.current?.value as unknown as string[]
+                        : undefined,
+                    protein_with: withRef.current?.value && withRef.current.value.length > 0
+                        ? withRef.current?.value as unknown as string[]
                         : undefined,
                 }
                 console.log(filterValues, organismRef.current?.selectedOptions, organismRef.current?.value);
