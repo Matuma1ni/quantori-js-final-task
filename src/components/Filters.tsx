@@ -1,8 +1,11 @@
-import { Button, FormControl, Select, FilledInput, InputLabel, Box } from "@mui/material"
-import { FC, useEffect, useMemo, useRef, useState } from "react"
+import { Button, FormControl, Select, FilledInput, InputLabel, Box, MenuItem } from "@mui/material"
+import { FC, useEffect, useRef, useState } from "react"
 import "./Filters.css"
 import { useSearchParams } from "react-router-dom"
 import { FiltersValues } from "../models/filterValues"
+import { getFilterOptions } from "../helpers/filterOptionsHelper"
+import { Options, optionObject } from "../models/options"
+import { Menu } from "@mui/icons-material"
 
 interface Props {
     onClose: () => void
@@ -10,6 +13,9 @@ interface Props {
 
 export const Filters: FC<Props> = ({ onClose }) => {
     const [disablingButton, setDisablingButton] = useState(true)
+    const [organismOptions, setOrganismOptions] = useState<optionObject[]>([])
+    const [annotationOptions, setAnnotationOptions] = useState<optionObject[]>([])
+    const [withOptions, setWithOptions] = useState<optionObject[]>([])
     const geneRef = useRef<HTMLInputElement>(null);
     const organismRef = useRef<HTMLSelectElement>(null);
     const fromRef = useRef<HTMLInputElement>(null);
@@ -22,13 +28,39 @@ export const Filters: FC<Props> = ({ onClose }) => {
         if (searchParams.has("filters")) {
             const currentFilters: FiltersValues = JSON.parse(decodeURI(searchParams.get("filters")!))
             geneRef.current!.value = currentFilters.gene ?? "";
-            organismRef.current!.value = currentFilters.organism ?? "";
+            if (currentFilters.organism) {
+                for (let option of organismRef.current!.options) {
+                    option.selected = currentFilters.organism.includes(option.value);
+                }
+            }
             fromRef.current!.value = currentFilters.from ? currentFilters.from.toString() : "";
             toRef.current!.value = currentFilters.to ? currentFilters.to.toString() : "";
-            annotationRef.current!.value = currentFilters.annotation ?? "";
-            withRef.current!.value = currentFilters.with ?? "";
+            if (currentFilters.annotation) {
+                for (let option of annotationRef.current!.options) {
+                    option.selected = currentFilters.annotation.includes(option.value);
+                }
+            }
+            //annotationRef.current!.value = currentFilters.annotation ?? [];
+            if (currentFilters.with) {
+                for (let option of withRef.current!.options) {
+                    option.selected = currentFilters.with.includes(option.value);
+                }
+            }
+            //withRef.current!.value = currentFilters.with ?? [];
         }
     }, [])
+
+    const searchQuery = decodeURI(searchParams.get("query") ?? "*") as string;
+
+    useEffect(() => {
+        async function fetch() {
+            const options: Options = await getFilterOptions(searchQuery);
+            setOrganismOptions(options.organisms);
+            setAnnotationOptions(options.annotations);
+            setWithOptions(options.with);
+        }
+        fetch();
+    }, [searchQuery])
 
     function handleInput() {
         setDisablingButton(!(
@@ -58,11 +90,17 @@ export const Filters: FC<Props> = ({ onClose }) => {
             if (hasFilters) {
                 const filterValues: FiltersValues = {
                     gene: geneRef.current?.value ? geneRef.current?.value : undefined,
-                    organism: organismRef.current?.value ? organismRef.current?.value : undefined,
+                    organism: organismRef.current && organismRef.current.selectedOptions.length > 0
+                        ? Array.from(organismRef.current.selectedOptions).map(o => o.value)
+                        : undefined,
                     from: fromRef.current?.value ? parseInt(fromRef.current.value) : undefined,
                     to: toRef.current?.value ? parseInt(toRef.current.value) : undefined,
-                    annotation: annotationRef.current?.value ? annotationRef.current?.value : undefined,
-                    with: withRef.current?.value ? withRef.current?.value : undefined
+                    annotation: annotationRef.current && annotationRef.current.selectedOptions.length > 0
+                        ? Array.from(annotationRef.current.selectedOptions).map(o => o.value)
+                        : undefined,
+                    with: withRef.current && withRef.current.selectedOptions.length > 0
+                        ? Array.from(withRef.current.selectedOptions).map(o => o.value)
+                        : undefined,
                 }
                 console.log(filterValues);
                 searchParams.set("filters", encodeURI(JSON.stringify(filterValues)));
@@ -93,24 +131,28 @@ export const Filters: FC<Props> = ({ onClose }) => {
                 />
             </FormControl>
             <h4 className="filterHeader">Organism</h4>
-            <FormControl 
-                onInput={handleInput} 
-                onChange={() => { setDisablingButton(false) }} 
+            <FormControl
+                onInput={handleInput}
+                onChange={() => { setDisablingButton(false) }}
                 sx={{ width: '90%', marginBottom: "15px", fontFamily: "Open Sans" }} variant="filled"
             >
-                <InputLabel htmlFor="organism-input">Select an option</InputLabel>
+                <InputLabel htmlFor="organism-input">Select options</InputLabel>
                 <Select
                     inputRef={organismRef}
                     id="organism-input"
                     sx={{ height: "52px" }}
-                />
-                { }
+                    onChange={() => { setDisablingButton(false) }}
+                    defaultValue={[]}
+                    multiple
+                >
+                    {organismOptions.map((option) => (<MenuItem value={option.value}>{option.label} ({option.count})</MenuItem>))}
+                </Select>
             </FormControl>
             <h4 className="filterHeader">Sequence length</h4>
             <Box component="form" noValidate sx={{ width: "90%", marginLeft: "5%", display: "flex", alignItems: "center" }}>
                 <FormControl
                     onInput={handleInput}
-                    onChange={() => {setDisablingButton(false)}}
+                    onChange={() => { setDisablingButton(false) }}
                     sx={{ width: '40%', marginBottom: '15px', fontFamily: 'Open Sans' }}
                     variant="filled"
                 >
@@ -125,7 +167,7 @@ export const Filters: FC<Props> = ({ onClose }) => {
                 <hr className="rangeLine" />
                 <FormControl
                     onInput={handleInput}
-                    onChange={() => {setDisablingButton(false)}}
+                    onChange={() => { setDisablingButton(false) }}
                     sx={{ width: '40%', marginBottom: '20px', fontFamily: 'Open Sans' }}
                     variant="filled"
                 >
@@ -139,34 +181,42 @@ export const Filters: FC<Props> = ({ onClose }) => {
                 </FormControl>
             </Box>
             <h4 className="filterHeader">Annotation score</h4>
-            <FormControl 
-                onInput={handleInput} 
-                onChange={() => {setDisablingButton(false)}}
-                sx={{ width: '90%', marginBottom: "15px", fontFamily: "Open Sans" }} 
+            <FormControl
+                onInput={handleInput}
+                onChange={() => { setDisablingButton(false) }}
+                sx={{ width: '90%', marginBottom: "15px", fontFamily: "Open Sans" }}
                 variant="filled"
             >
-                <InputLabel htmlFor="annotation-input">Select an option</InputLabel>
+                <InputLabel htmlFor="annotation-input">Select options</InputLabel>
                 <Select
                     inputRef={annotationRef}
                     id="annotation-input"
                     sx={{ height: "52px" }}
-                />
-                { }
+                    onChange={() => { setDisablingButton(false) }}
+                    multiple
+                    defaultValue={[]}
+                >
+                    {annotationOptions.map((option) => (<MenuItem value={option.value}>{option.label} ({option.count})</MenuItem>))}
+                </Select>
             </FormControl>
             <h4 className="filterHeader">Protein with</h4>
-            <FormControl 
-                onInput={handleInput} 
-                sx={{ width: '90%', marginBottom: "15px", fontFamily: "Open Sans" }} 
+            <FormControl
+                onInput={handleInput}
+                sx={{ width: '90%', marginBottom: "15px", fontFamily: "Open Sans" }}
                 variant="filled"
-                onChange={() => {setDisablingButton(false)}}
+                onChange={() => { setDisablingButton(false) }}
             >
                 <InputLabel htmlFor="protein-with-input">Select</InputLabel>
                 <Select
                     inputRef={withRef}
                     id="protein-with-input"
                     sx={{ height: "52px" }}
-                />
-                { }
+                    onChange={() => { setDisablingButton(false) }}
+                    multiple
+                    defaultValue={[]}
+                >
+                    {withOptions.map((option) => (<MenuItem value={option.value}>{option.label} ({option.count})</MenuItem>))}
+                </Select>
             </FormControl>
             <div className="buttonsContainer">
                 <Button

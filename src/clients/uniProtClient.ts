@@ -2,6 +2,7 @@ import { linkRegexp } from "../helpers/regexps";
 
 const UniProtUrl = "https://rest.uniprot.org/uniprotkb/search?fields=accession,id,gene_names,organism_name,length,cc_subcellular_location&query="
 const ProteinInfoUrl = "https://rest.uniprot.org/uniprotkb/"
+const OptionsURL = "https://rest.uniprot.org/uniprotkb/search?facets=model_organism,proteins_with,annotation_score&query="
 
 export async function searchProteins(query: string): Promise<any> {
     const response = await fetch(`${UniProtUrl}${query}`);
@@ -40,6 +41,12 @@ export async function getNextProteins(query: string): Promise<any> {
 
 export async function getProteinInfo(query: string): Promise<any> {
     const response = await fetch(`${ProteinInfoUrl}${query}`);
-    const data = (await response.json())
+    const data = response.json();
     return data;
+}
+
+export async function getOptions(query:string): Promise<any> {
+    const response = await fetch(`${OptionsURL}${query}`);
+    const data = await response.json();
+    return data.facets
 }
