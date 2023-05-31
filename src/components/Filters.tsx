@@ -27,7 +27,7 @@ export const Filters: FC<Props> = ({ onClose }) => {
     useEffect(() => {
         if (searchParams.has("filters")) {
             let fromValue = "";
-            let toValue = ""
+            let toValue = "";
             const currentFilters: FiltersValues = JSON.parse(decodeURI(searchParams.get("filters")!))
             const matches = currentFilters.length?.match(fromToRegexp);
             if (matches) {

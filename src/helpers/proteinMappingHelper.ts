@@ -86,10 +86,10 @@ export async function createPolymersObject(searchQuery: string, filtersValues: a
     const { data, totalResults, link } = await promise;
     return {
         proteins: data.map((result: any) => ({
-            entry: result.primaryAccession,
-            entryNames: result.uniProtkbId,
-            genes: extractGenes(result),
-            organism: result.organism.scientificName,
+            accession: result.primaryAccession,
+            id: result.uniProtkbId,
+            gene: extractGenes(result),
+            organism_name: result.organism.scientificName,
             subcellularLocation: extractCellularLocation(result).join(', ') ?? "",
             length: result.sequence.length
         })),

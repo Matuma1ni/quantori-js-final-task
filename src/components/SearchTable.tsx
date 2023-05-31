@@ -1,78 +1,190 @@
-import { useCallback, useEffect, useMemo, useRef } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import './SearchTable.css'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Protein } from "../models/protein";
 import { Link, useSearchParams } from "react-router-dom";
 import { createPolymersObject } from "../helpers/proteinMappingHelper";
-
-const columns: MRT_ColumnDef<Protein>[] = [
-    {
-        accessorKey: 'entry',
-        header: 'Entry',
-        minSize: 70,
-        size: 84,
-        maxSize: 90,
-        Cell: ({ cell }) => {
-            return (
-                <Link to={`/protein/${cell.getValue<string>()}`}>{cell.getValue<string>()}</Link>
-            )
-        }
-    },
-    {
-        accessorKey: 'entryNames',
-        header: 'Entry Names',
-        minSize: 120,
-        size: 135,
-    },
-    {
-        accessorKey: 'genes',
-        header: 'Genes',
-        minSize: 120,
-        maxSize: 140,
-        Cell: ({ cell }) => {
-            return (
-                <div className="genesContainer">
-                    {cell.getValue<string[]>().map((el, index) => {
-                        return <span className={index === 0 ? 'firstGene' : 'otherGenes'}>{index === 0 ? el : ', ' + el}</span>
-                    })}
-                </div>
-            )
-        }
-    },
-    {
-        accessorKey: 'organism',
-        header: 'Organism',
-        size: 135,
-        Cell: ({ cell }) => {
-            return (
-                <div className="organismContainer">{cell.getValue<string>()}</div>
-            )
-        }
-    },
-    {
-        accessorKey: 'subcellularLocation',
-        header: 'Subcellular Location',
-        minSize: 80,
-        size: 170,
-    },
-    {
-        accessorKey: 'length',
-        header: 'Length (AA)',
-        minSize: 80,
-        size: 100,
-    },
-];
+import { IconButton } from "@mui/material";
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 export const SearchTable = () => {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const tableContainerRef = useRef<HTMLDivElement>(null);
     const rowVirtualizerInstanceRef = useRef(null);
+    const [sortField, setSortField] = useState('');
+    const [sortDirection, setSortDirection] = useState<string|null>(null)
+
+    useEffect(() => {
+        if (searchParams.has("sort")) {
+            const currentSort = decodeURI(searchParams.get("sort")!)
+            const [header, direction] = currentSort.split(' ');
+            setSortField(header);
+            setSortDirection(direction)
+        }
+    }, [])
+
+    const handleSort = useCallback((field: string) => {
+        if (field != sortField) {
+            setSortDirection("asc");
+            setSortField(field);
+            setSearchParams(searchParams => {
+                searchParams.set("sort", encodeURI(`${field} asc`));
+                return searchParams;
+            })
+        } else if (sortDirection === "asc") {
+            setSortDirection("desc");
+            setSearchParams(searchParams => {
+                searchParams.set("sort", encodeURI(`${field} desc`));
+                return searchParams;
+            })
+        } else {
+            setSortField("");
+            setSortDirection(null);
+            setSearchParams(searchParams => {
+                searchParams.delete("sort");
+                return searchParams;
+            })
+        }
+    }, [sortField, sortDirection]);
+
+    const columns: MRT_ColumnDef<Protein>[] = useMemo(() =>
+        [
+            {
+                accessorKey: 'accession',
+                header: 'Entry',
+                minSize: 70,
+                size: 84,
+                maxSize: 90,
+                Cell: ({ cell }) => {
+                    return (
+                        <Link to={`/protein/${cell.getValue<string>()}`}>{cell.getValue<string>()}</Link>
+                    )
+                },
+                Header: ({ column, header }) => {
+                    return (
+                        <div className="headerCell">
+                            <p>{column.columnDef.header}</p>
+                            <IconButton 
+                                sx={{ width: "24px", height: "24px" }}
+                                onClick={() => handleSort(header.id)}
+                            >
+                                <FilterListIcon />
+                            </IconButton>
+                        </div>
+                    )
+                }
+            },
+            {
+                accessorKey: 'id',
+                header: 'Entry Names',
+                minSize: 120,
+                size: 135,
+                Header: ({ column, header }) => {
+                    return (
+                        <div className="headerCell">
+                            <p>{column.columnDef.header}</p>
+                            <IconButton 
+                                sx={{ width: "24px", height: "24px" }}
+                                onClick={() => handleSort(header.id)}
+                            >
+                                <FilterListIcon />
+                            </IconButton>
+                        </div>
+                    )
+                }
+            },
+            {
+                accessorKey: 'gene',
+                header: 'Genes',
+                minSize: 120,
+                maxSize: 140,
+                Cell: ({ cell }) => {
+                    return (
+                        <div className="genesContainer">
+                            {cell.getValue<string[]>().map((el, index) => {
+                                return <span className={index === 0 ? 'firstGene' : 'otherGenes'}>{index === 0 ? el : ', ' + el}</span>
+                            })}
+                        </div>
+                    )
+                },
+                Header: ({ column, header }) => {
+                    return (
+                        <div className="headerCell">
+                            <p>{column.columnDef.header}</p>
+                            <IconButton 
+                                onClick={() => handleSort(header.id)}
+                                sx={{ width: "24px", height: "24px" }}
+                            >
+                                <FilterListIcon />
+                            </IconButton>
+                        </div>
+                    )
+                }
+            },
+            {
+                accessorKey: 'organism_name',
+                header: 'Organism',
+                size: 135,
+                Cell: ({ cell }) => {
+                    return (
+                        <div className="organismContainer">{cell.getValue<string>()}</div>
+                    )
+                },
+                Header: ({ column, header }) => {
+                    return (
+                        <div className="headerCell">
+                            <p>{column.columnDef.header}</p>
+                            <IconButton
+                                onClick={() => handleSort(header.id)}
+                                sx={{ width: "24px", height: "24px" }}
+                            >
+                                <FilterListIcon />
+                            </IconButton>
+                        </div>
+                    )
+                }
+            },
+            {
+                accessorKey: 'subcellularLocation',
+                header: 'Subcellular Location',
+                minSize: 80,
+                size: 170,
+                Header: ({ column }) => {
+                    return (
+                        <div className="headerCell">
+                            <p>{column.columnDef.header}</p>
+                        </div>
+                    )
+                }
+            },
+            {
+                accessorKey: 'length',
+                header: 'Length (AA)',
+                minSize: 80,
+                size: 100,
+                Header: ({ column, header }) => {
+                    return (
+                        <div className="headerCell">
+                            <p>{column.columnDef.header}</p>
+                            <IconButton 
+                                sx={{ width: "24px", height: "24px" }}
+                                onClick={() => handleSort(header.id)}
+                            >
+                                <FilterListIcon />
+                            </IconButton>
+                        </div>
+                    )
+                }
+            },
+        ]
+    , [handleSort]);
 
     const searchQuery = decodeURI(searchParams.get("query") ?? "") as string;
-    const filters = useMemo(() => 
-        searchParams.get("filters") ? JSON.parse(decodeURI(searchParams.get("filters") ?? "")) : "", 
-    [searchParams]);
+
+    const filters = useMemo(() =>
+        searchParams.get("filters") ? JSON.parse(decodeURI(searchParams.get("filters") ?? "")) : "",
+        [searchParams]);
 
     const { data, fetchNextPage, isError, isFetching, isLoading, refetch } =
         useInfiniteQuery({
@@ -95,7 +207,7 @@ export const SearchTable = () => {
         refetch({
 
         });
-    }, [searchQuery, filters]);
+    }, [searchQuery, filters, sortField]);
 
     const flatData = useMemo(
         () => data?.pages.flatMap((page) => page.proteins) ?? [],
@@ -142,6 +254,13 @@ export const SearchTable = () => {
                     'mrt-row-numbers': {
                         size: 12,
                         maxSize: 12,
+                        Header: ({}) => {
+                            return (
+                                <div className="headerCell">
+                                    <p>#</p>
+                                </div>
+                            )
+                        }
                     }
                 }}
                 data={flatData}
