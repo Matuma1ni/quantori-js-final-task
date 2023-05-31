@@ -1,5 +1,5 @@
 import { Protein, ProteinInfo } from "../models/protein"
-import { getProteinInfo, searchProteins } from "../clients/uniProtClient"
+import { getNextProteins, getProteinInfo, searchProteins } from "../clients/uniProtClient"
 import { Reference, doi } from "../models/reference"
 
 function extractGenes(resultJson: any) {
@@ -33,17 +33,15 @@ function createPubMedLink(pubMedID: string): { pubMed: string | null, europePMC:
     }
 }
 function createDoi(citations: any): doi {
-    function findDoiink(citations: any): string | null {
-        if (citations.find((citation: any) => citation.database === "DOI")) {
-            console.log(citations.find((citation: any) => citation.database === "DOI"))
+    function findDoi(citations: any): string | null {
+        if (citations?.find((citation: any) => citation.database === "DOI")) {
             return `https://doi.org/${citations.find((citation: any) => citation.database === "DOI").id}`;
         } else {
-            console.log(citations)
             return null;
         }
     }
     return {
-        link: findDoiink(citations),
+        link: findDoi(citations),
     }
 }
 
@@ -63,26 +61,33 @@ function createReferencesList(references: any[], source: string): Reference[] {
             : []),
         source: source,
         ...createPubMedLink(reference.citation.citationCrossReferences
-            .find((citationCR: any) => citationCR.database === "PubMed")?.id),
+            ?.find((citationCR: any) => citationCR.database === "PubMed")?.id),
         doi: createDoi(reference.citation.citationCrossReferences),
-        journal: reference.citation.journal,
-        volume: reference.citation.volume,
-        firstPage: reference.citation.firstPage,
-        lastPage: reference.citation.lastPage,
-        publicationDate: reference.citation.publicationDate,
+        journal: reference.citation.journal ?? "",
+        volume: reference.citation.volume ?? "",
+        firstPage: reference.citation.firstPage ?? "",
+        lastPage: reference.citation.lastPage ?? "",
+        publicationDate: reference.citation.publicationDate ?? "",
     }));
 }
 
-export async function createPolymersObject(searchQuery: string): Promise<Protein[]> {
-    const data = await searchProteins(searchQuery);
-    return data.map((result: any) => ({
-        entry: result.primaryAccession,
-        entryNames: result.uniProtkbId,
-        genes: extractGenes(result),
-        organism: result.organism.scientificName,
-        subcellularLocation: extractCellularLocation(result) ?? [],
-        length: result.features.find((feature: any) => feature.type === 'Chain').location.end.value as number,
-    }))
+export async function createPolymersObject(searchQuery: string): Promise<{ proteins: Protein[], totalNumber: number, nextURL: string | null }> {
+    const promise = searchQuery.startsWith("http")
+        ? getNextProteins(searchQuery)
+        : searchProteins(searchQuery);
+    const {data, totalResults, link} = await promise;
+    return {
+        proteins: data.map((result: any) => ({
+            entry: result.primaryAccession,
+            entryNames: result.uniProtkbId,
+            genes: extractGenes(result),
+            organism: result.organism.scientificName,
+            subcellularLocation: extractCellularLocation(result).join(', ') ?? "",
+            length: result.sequence.length
+        })),
+        totalNumber: totalResults,
+        nextURL: link,
+    }
 }
 
 export async function createPolymerInfoObject(polymerEntry: string): Promise<ProteinInfo> {

@@ -1,108 +1,193 @@
-import { FC, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import './SearchTable.css'
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, styled, tableCellClasses } from "@mui/material";
+import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { Protein } from "../models/protein";
 import { Link, useSearchParams } from "react-router-dom";
 import { createPolymersObject } from "../helpers/proteinMappingHelper";
 
-interface Props {
-    startRow: number,
-}
-
-const StyledTableCell = styled(TableCell)(() => ({
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: '#F5F5F5',
-        color: '#000000',
+const columns: MRT_ColumnDef<Protein>[] = [
+    {
+        accessorKey: 'entry',
+        header: 'Entry',
+        minSize: 70,
+        size: 84,
+        maxSize: 90,
+        Cell: ({ cell }) => {
+            return (
+                <Link to={`/protein/${cell.getValue<string>()}`}>{cell.getValue<string>()}</Link>
+            )
+        }
     },
-    [`&.${tableCellClasses.body}`]: {
-        fontStyle: 'normal',
-        fontSize: 12,
-        fontWeight: 600,
-        lineHeight: '16px',
+    {
+        accessorKey: 'entryNames',
+        header: 'Entry Names',
+        minSize: 120,
+        size: 135,
     },
-}));
+    {
+        accessorKey: 'genes',
+        header: 'Genes',
+        minSize: 120,
+        maxSize: 140,
+        Cell: ({ cell }) => {
+            return (
+                <div className="genesContainer">
+                    {cell.getValue<string[]>().map((el, index) => {
+                        return <span className={index === 0 ? 'firstGene' : 'otherGenes'}>{index === 0 ? el : ', ' + el}</span>
+                    })}
+                </div>
+            )
+        }
+    },
+    {
+        accessorKey: 'organism',
+        header: 'Organism',
+        size: 135,
+        Cell: ({ cell }) => {
+            return (
+                <div className="organismContainer">{cell.getValue<string>()}</div>
+            )
+        }
+    },
+    {
+        accessorKey: 'subcellularLocation',
+        header: 'Subcellular Location',
+        minSize: 80,
+        size: 170,
+    },
+    {
+        accessorKey: 'length',
+        header: 'Length (AA)',
+        minSize: 80,
+        size: 100,
+    },
+];
 
-
-export const SearchTable: FC<Props> = ({ startRow }) => {
-    const [proteins, setProteins] = useState<Protein[]>([]);
+export const SearchTable = () => {
     const [searchParams] = useSearchParams();
+    const tableContainerRef = useRef<HTMLDivElement>(null);
+    const rowVirtualizerInstanceRef = useRef(null);
 
-    function createData(
-        index: number,
-        entry: string,
-        entryNames: string,
-        genes: string,
-        organism: string,
-        subcellularLocation: string,
-        length: number,
-    ) {
-        return { index, entry, entryNames, genes, organism, subcellularLocation, length };
-    }
+    const searchQuery = searchParams.get("query") as string;
 
-    const searchQuery = searchParams.get("query") as string
+    const { data, fetchNextPage, isError, isFetching, isLoading, refetch } =
+        useInfiniteQuery({
+            queryKey: ['table-data'],
+            queryFn: async ({ pageParam = null }) => {
+                if (pageParam) {
+                    const newProteins = await createPolymersObject(pageParam);
+                    return newProteins;
+                } else {
+                    const newProteins = await createPolymersObject(searchQuery);
+                    return newProteins;
+                }
+            },
+            getNextPageParam: (_lastGroup, _) => _lastGroup.nextURL,
+            keepPreviousData: true,
+            refetchOnWindowFocus: false,
+        });
 
     useEffect(() => {
-        async function fetch() {
-            const proteinsFetched = await createPolymersObject(searchQuery);
-            setProteins(proteinsFetched);
-        }
-        fetch();
-    }, [searchParams])
+        refetch({
 
-    const rows = proteins.map((protein: Protein, index) => createData(
-        (index + 1),
-        protein.entry,
-        protein.entryNames,
-        protein.genes.join(', '),
-        protein.organism,
-        protein.subcellularLocation.join(', '),
-        protein.length
-    ));
+        });
+    }, [searchQuery]);
+
+    const flatData = useMemo(
+        () => data?.pages.flatMap((page) => page.proteins) ?? [],
+        [data],
+    );
+
+    const totalDBRowCount = data?.pages?.[0]?.totalNumber ?? 0;
+    const totalFetched = flatData.length;
+
+    //called on scroll and possibly on mount to fetch more data as the user scrolls and reaches bottom of table
+    const fetchMoreOnBottomReached = useCallback(
+        (containerRefElement: HTMLDivElement | null) => {
+            if (containerRefElement) {
+                const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
+                //once the user has scrolled within 400px of the bottom of the table, fetch more data if we can
+                if (
+                    scrollHeight - scrollTop - clientHeight < 400 &&
+                    !isFetching &&
+                    totalFetched < totalDBRowCount
+                ) {
+                    fetchNextPage();
+                }
+            }
+        },
+        [fetchNextPage, isFetching, totalFetched, totalDBRowCount],
+    );
+
+    //a check on mount to see if the table is already scrolled to the bottom and immediately needs to fetch more data
+    useEffect(() => {
+        fetchMoreOnBottomReached(tableContainerRef?.current);
+    }, [fetchMoreOnBottomReached]);
 
     return (
         <div className="searchPageContainer">
             {searchQuery !== '*' ? (
-                <h3 className="searchTableHeader">{startRow}-{startRow + proteins.length - 1} Search Results for {searchQuery}</h3>
+                <h3 className="searchTableHeader">{totalDBRowCount} Search Results for {searchQuery}</h3>
             ) : (
-                <h3 className="searchTableHeader">{proteins.length} Search Results</h3>
+                <h3 className="searchTableHeader">{totalDBRowCount} Search Results</h3>
             )}
-            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: "75vh", width: '82.5vw' }}>
-                    <Table stickyHeader sx={{ width: '100%' }} aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                                <StyledTableCell>#</StyledTableCell>
-                                <StyledTableCell align="left">Entry</StyledTableCell>
-                                <StyledTableCell align="left">Entry Names</StyledTableCell>
-                                <StyledTableCell align="left">Genes</StyledTableCell>
-                                <StyledTableCell align="left">Organism</StyledTableCell>
-                                <StyledTableCell align="left">Subcellular Location</StyledTableCell>
-                                <StyledTableCell align="left">Length (AA)</StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map((row) => (
-                                <TableRow
-                                    key={row.index}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {row.index}
-                                    </TableCell>
-                                    <TableCell align="left"><Link to={`/protein/${row.entry}`}>{row.entry}</Link></TableCell>
-                                    <TableCell align="left">{row.entryNames}</TableCell>
-                                    <TableCell align="left">{row.genes}</TableCell>
-                                    <TableCell align="center"><div className="organismContainer">{row.organism}</div></TableCell>
-                                    <TableCell align="left">{row.subcellularLocation}</TableCell>
-                                    <TableCell align="left">{row.length}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
+            <MaterialReactTable columns={columns}
+                muiTablePaperProps={{ sx: { boxShadow: "none" } }}
+                muiTableHeadRowProps={{ sx: { boxShadow: "none" } }}
+                displayColumnDefOptions={{
+                    'mrt-row-numbers': {
+                        size: 12,
+                        maxSize: 12,
+                    }
+                }}
+                data={flatData}
+                enablePagination={false}
+                enableRowNumbers
+                enableTopToolbar={false}
+                enableColumnActions={false}
+                enableBottomToolbar={false}
+                enableRowVirtualization
+                enableColumnOrdering={false}
+                enableRowOrdering={false}
+                enableSorting={false}
+                muiTableContainerProps={{
+                    ref: tableContainerRef,
+                    sx: { maxHeight: '72vh', width: "100%", borderRadius: "8px" },
+                    onScroll: (
+                        event, //add an event listener to the table container element
+                    ) => fetchMoreOnBottomReached(event.target as HTMLDivElement),
+                }}
+                muiTableHeadCellProps={{
+                    sx: {
+                        padding: "12px 6px 12px 14px",
+                        backgroundColor: "#F5F5F5",
+                        margin: "0px 1px",
+                    }
+                }}
+                muiTableBodyCellProps={{
+                    sx: { padding: "14px 6px 14px 14px" }
+                }}
+                muiToolbarAlertBannerProps={
+                    isError
+                        ? {
+                            color: 'error',
+                            children: 'Error loading data',
+                        }
+                        : undefined
+                }
+                state={{
+                    isLoading,
+                    showAlertBanner: isError,
+                    showProgressBars: isFetching,
+                }}
+                rowVirtualizerInstanceRef={rowVirtualizerInstanceRef} //get access to the virtualizer instance
+                rowVirtualizerProps={{ overscan: 4 }}
+            />
         </div>
     )
 }
 
-//span onClick={handleOnClick} style={{ textDecoration: 'underline', cursor: 'pointer' }}
+
+
+
