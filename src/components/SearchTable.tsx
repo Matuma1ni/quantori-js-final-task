@@ -86,8 +86,8 @@ export const SearchTable = () => {
             {
                 accessorKey: 'id',
                 header: 'Entry Names',
-                minSize: 120,
-                size: 135,
+                minSize: 100,
+                maxSize: 140,
                 Header: ({ column, header }) => {
                     let color: string|undefined = undefined;
                     let direction: string|undefined = undefined;
@@ -113,7 +113,7 @@ export const SearchTable = () => {
             {
                 accessorKey: 'gene',
                 header: 'Genes',
-                minSize: 120,
+                minSize: 40,
                 maxSize: 140,
                 Cell: ({ cell }) => {
                     return (

@@ -1,5 +1,5 @@
 import { Button, FormControl, Select, FilledInput, InputLabel, Box, MenuItem } from "@mui/material"
-import { FC, useEffect, useMemo, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import "./Filters.css"
 import { useSearchParams } from "react-router-dom"
 import { FiltersValues } from "../models/filterValues"
