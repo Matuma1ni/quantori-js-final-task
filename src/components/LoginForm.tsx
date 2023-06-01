@@ -97,7 +97,7 @@ export const LoginForm: FC<Props> = ({ onClickSignup }) => {
                 sx={{ width: "86.6%", background: "#D8E7FF", borderRadius: "12px", color: "#175BC0", fontWeight: "700", textTransform: "none" }}
             >Login</Button>
             <p className="loginFooter">Don’t have an account?
-                <span onClick={handleClickSignup} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Sign up </span>
+                <span onClick={handleClickSignup} style={{ textDecoration: 'underline', cursor: 'pointer' }}> Sign up </span>
             </p>
         </div>
     )

@@ -46,7 +46,7 @@ export const SearchTable = () => {
                 return searchParams;
             })
         }
-    }, [sortField, sortDirection]);
+    }, [sortField, sortDirection, searchParams]);
 
     const columns: MRT_ColumnDef<Protein>[] = useMemo(() =>
         [
