@@ -1,0 +1,52 @@
+.formContainer {
+    background: white;
+    border-radius: 12px;
+    width: 36%;
+}
+
+.loginForm {
+    height: 350px;
+}
+
+.signupForm {
+    height: 435px;
+}
+
+.loginHeader {
+    margin-top: 28px;
+    font-size: 18px;
+    line-height: 25px;
+    color: #000000;
+    text-align: center;
+}
+
+.loginPasswordForm {
+    margin-left: 6.7%;
+    width: 86.6%;
+}
+
+.formHeader {
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    color: #2B2B2B;
+    margin: 5px 0px;
+}
+
+.formInput {
+    padding: 0px 10px;
+    height: 48px;
+    width: calc(100% - 20px);
+    background: #F5F5F5;
+    border-radius: 8px;
+    border: 0px;
+    margin-bottom: 20px;
+}
+
+.loginFooter {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    margin: 7px 0px 20px 0px;
+}

@@ -1,0 +1,88 @@
+.pageContainer {
+    text-align: left;
+    margin-top: 67px;
+    width: 80vw; 
+    margin-left: 10vw;
+    height: calc(100% - 67px);
+}
+.infoHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+}
+.proteinHeader {
+    display: inline-block;
+    margin-right: 13px;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 30px;
+}
+.organismObject {
+    padding: 3px 20px;
+    display: inline-block;
+    background: #D8E7FF;
+    border-radius: 12px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    color: #2B2B2B;
+}
+.shortInfoHeader {
+    margin-top: 7px;
+    margin-bottom: 0px;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    color: #616161;
+}
+.shortInfoContent {
+    margin-top: 4px;
+    margin-bottom: 0px;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #2B2B2B;
+}
+.detailsContainer {
+    margin: -24px 0px 0px -24px;
+}
+.detailsHeader {
+    margin-top: 24px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+}
+.detailsTable {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #2B2B2B;
+    width: 35%;
+}
+.tableData {
+    margin-top: 0px;
+    padding-top: 0px;
+}
+.sequenceContainer {
+    padding: 12px 12px;
+    width: calc(100% - 24px);
+    background: #F2F2F2;
+    border-radius: 8px;
+    word-wrap: break-word;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+}
+.uniprotWidgetContainer {
+    height: 55vh;
+    overflow:auto;
+    margin-left: -20px;
+}
+.cardsContainer {
+    height: 55vh;
+    overflow:auto;
+    margin-left: -20px;
+}

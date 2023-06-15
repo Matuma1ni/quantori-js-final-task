@@ -1,0 +1,56 @@
+.searchPageContainer {
+    font-family: 'Open Sans';
+    color: #2B2B2B;
+    text-align: left;
+    margin-left: 6.5vw;
+    width: 82.5vw;
+}
+.searchTableHeader {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 22px;
+}
+.organismContainer {
+    padding: 3px 20px;
+    display: inline-block;
+    background: #D8E7FF;
+    border-radius: 12px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    text-align: center;
+}
+.firstGene {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+}
+.otherGenes {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+}
+.headerCell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+}
+th {
+    padding: 0px 10px 0px 12px !important;
+}
+.Mui-TableHeadCell-Content {
+    width: 100%;
+}
+.Mui-TableHeadCell-Content-Labels {
+    flex-grow: 1;
+}
+.Mui-TableHeadCell-Content-Wrapper {
+    flex-grow: 1;
+}
