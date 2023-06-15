@@ -18,7 +18,7 @@ export const SignUpForm: FC<Props> = ({ onClickLogin }) => {
         _,
         __,
         signupError,
-      ] = useCreateUserWithEmailAndPassword(auth);
+    ] = useCreateUserWithEmailAndPassword(auth);
 
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
@@ -37,7 +37,7 @@ export const SignUpForm: FC<Props> = ({ onClickLogin }) => {
                 setPasswordError(error.message)
             }
         }
-    }, [signupError])  
+    }, [signupError])
 
     const handleClickLogin = () => {
         onClickLogin();
@@ -58,7 +58,7 @@ export const SignUpForm: FC<Props> = ({ onClickLogin }) => {
     function handleInput() {
         setDisablingButton(!emailRef.current?.value || !passwordRef.current?.value || !repeatPasswordRef.current?.value);
     }
-    
+
 
     const handleSignup = () => {
         if (emailRef.current && passwordRef.current && repeatPasswordRef.current) {
@@ -66,11 +66,11 @@ export const SignUpForm: FC<Props> = ({ onClickLogin }) => {
             const passwordValid = passwordRegexp.test(passwordRef.current.value);
             if (passwordRef.current.value.length < 6) {
                 setPasswordError('Please, provide a password')
-                return 
+                return
             }
             if (!emailValid) {
                 setEmailError('Please, provide valid email')
-                return 
+                return
             }
             if (passwordRef.current.value !== repeatPasswordRef.current.value) {
                 setRepPasswordError("Passwords don't match")
@@ -99,13 +99,17 @@ export const SignUpForm: FC<Props> = ({ onClickLogin }) => {
                     {(emailError) && <FormHelperText>{emailError}</FormHelperText>}
                 </FormControl>
                 <h4 className="formHeader">Password</h4>
-                <PasswordInput onInputEnableButton={handleInput} onFocusResetError={handlePasswordFocus} inputRef={passwordRef} error={passwordError}/>
+                <PasswordInput onInputEnableButton={handleInput} onFocusResetError={handlePasswordFocus} inputRef={passwordRef} error={passwordError} />
                 <h4 className="formHeader">Repeat Password</h4>
-                <PasswordInput onInputEnableButton={handleInput} onFocusResetError={handleRepPasswordFocus} inputRef={repeatPasswordRef} error={repPasswordError}/>
+                <PasswordInput onInputEnableButton={handleInput} onFocusResetError={handleRepPasswordFocus} inputRef={repeatPasswordRef} error={repPasswordError} />
             </div>
-            <Button onClick={handleSignup} disabled={disablingButton} sx={{ width: "86.6%", background: "#D8E7FF", borderRadius: "12px", color: "#175BC0", fontWeight: "700" }}>Create Account</Button>
+            <Button
+                onClick={handleSignup}
+                disabled={disablingButton}
+                sx={{ width: "86.6%", background: "#D8E7FF", borderRadius: "12px", color: "#175BC0", fontWeight: "700", textTransform: "none" }}
+            >Create Account</Button>
             <p className="loginFooter">Already have an account?
-                <span onClick={handleClickLogin} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Login</span>
+                <span onClick={handleClickLogin} style={{ textDecoration: 'underline', cursor: 'pointer' }}> Login</span>
             </p>
         </div>
     )

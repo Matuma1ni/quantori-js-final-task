@@ -19,9 +19,7 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 19px;
-}
-.genesContainer {
-    
+    text-align: center;
 }
 .firstGene {
     font-style: normal;
@@ -34,4 +32,25 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 19px;
+}
+.headerCell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+}
+th {
+    padding: 0px 10px 0px 12px !important;
+}
+.Mui-TableHeadCell-Content {
+    width: 100%;
+}
+.Mui-TableHeadCell-Content-Labels {
+    flex-grow: 1;
+}
+.Mui-TableHeadCell-Content-Wrapper {
+    flex-grow: 1;
 }

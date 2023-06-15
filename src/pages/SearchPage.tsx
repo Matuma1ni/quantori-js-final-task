@@ -11,6 +11,7 @@ export const SearchPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [searchState, setSearchState] = useState('');
     const [filtersVisible, setFiltersVisible] = useState<boolean>(false)
+    const [filtersIndicator, setFiltersIndicator] = useState<boolean>(false)
 
 
     useEffect(() => {
@@ -20,6 +21,14 @@ export const SearchPage = () => {
             searchRef.current!.value = currentQuery;
         }
     }, [])
+
+    useEffect(() => {   
+        if (searchParams.has("filters")) {
+            setFiltersIndicator(true)
+        } else {
+            setFiltersIndicator(false)
+        }
+    }, [searchParams])
 
     const handleOnSearch = () => {
         if (searchRef.current) {
@@ -59,6 +68,7 @@ export const SearchPage = () => {
                     background: "rgba(60, 134, 244, 0.2)",
                     borderRadius: "8px",
                     color: "#3C86F4",
+                    textTransform: "none"
                 }}>Search</Button>
                 <IconButton
                     onClick={() => setFiltersVisible(!filtersVisible)}
@@ -71,9 +81,10 @@ export const SearchPage = () => {
                         color: "#3C86F4",
                     }}>
                     <DisplaySettingsOutlined />
+                    {(filtersIndicator) && <div className="activeFilters"></div>}
                 </IconButton>
             </div>
-            {(filtersVisible) ? <Filters onClose={() => setFiltersVisible(false)} /> : <></>}
+            {(filtersVisible) && <Filters onClose={() => setFiltersVisible(false)} />}
             {searchState ? (
                 <SearchTable />
             ) : (

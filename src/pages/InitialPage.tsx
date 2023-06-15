@@ -18,7 +18,11 @@ export const InitialPage = () => {
                     <div className="initialPageForm">
                         <h1 className="titleHeader">Q-1 Search</h1>
                         <p className="initPageText">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt u</p>
-                        <Button variant="contained" onClick={navigateToLogin} sx={{ color: 'blue', backgroundColor: 'white', borderRadius: '16px' }}>Login</Button>
+                        <Button 
+                            variant="contained" 
+                            onClick={navigateToLogin} 
+                            sx={{ color: 'blue', backgroundColor: 'white', borderRadius: '16px', textTransform: "none" }}
+                        >Login</Button>
                     </div>
                 </Grid>
                 <Grid xs={6}></Grid>

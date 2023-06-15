@@ -30,3 +30,12 @@
     color: #616161;
     margin-top: 35vh;
 }
+.activeFilters {
+    height: 12px;
+    width: 12px;
+    border-radius: 100%;
+    background: #3C86F4;;
+    position: absolute;
+    right: -4px;
+    bottom: 30px;
+}
