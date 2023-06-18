@@ -2,9 +2,9 @@ import { Button, FormControl, Select, FilledInput, InputLabel, Box, MenuItem } f
 import { FC, useEffect, useState } from "react"
 import "./Filters.css"
 import { useSearchParams } from "react-router-dom"
-import { FiltersValues } from "../models/filterValues"
+import { FiltersValues } from "../models/FilterValues"
 import { getFilterOptions } from "../helpers/filterOptionsHelper"
-import { Options, optionObject } from "../models/options"
+import { Options, OptionObject } from "../models/Options"
 import { fromToRegexp } from "../helpers/regexps"
 
 interface Props {
@@ -12,9 +12,9 @@ interface Props {
 }
 
 export const Filters: FC<Props> = ({ onClose }) => {
-    const [organismOptions, setOrganismOptions] = useState<optionObject[]>([])
-    const [annotationOptions, setAnnotationOptions] = useState<optionObject[]>([])
-    const [withOptions, setWithOptions] = useState<optionObject[]>([])
+    const [organismOptions, setOrganismOptions] = useState<OptionObject[]>([])
+    const [annotationOptions, setAnnotationOptions] = useState<OptionObject[]>([])
+    const [withOptions, setWithOptions] = useState<OptionObject[]>([])
 
     const [genInputValue, setGenInputValue] = useState('');
     const [organizmSelectValue, setOrganizmSelectValue] = useState<string[]>([]);

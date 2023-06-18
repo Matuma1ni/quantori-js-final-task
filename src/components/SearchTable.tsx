@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import './SearchTable.css'
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Protein } from "../models/protein";
+import { Protein } from "../models/Protein";
 import { Link, useSearchParams } from "react-router-dom";
 import { createPolymersObject } from "../helpers/proteinMappingHelper";
 import { IconButton } from "@mui/material";

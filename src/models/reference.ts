@@ -6,7 +6,7 @@ export interface Reference {
     source: string,
     pubMed: string | null,
     europePMC: string | null,
-    doi: doi,
+    doi: Doi,
     journal: string,
     volume: number,
     firstPage: number,
@@ -14,6 +14,6 @@ export interface Reference {
     publicationDate: number,
 }
 
-export interface doi {
+export interface Doi {
     link: string | null, 
 }

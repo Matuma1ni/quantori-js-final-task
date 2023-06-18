@@ -1,6 +1,6 @@
-import { Protein, ProteinInfo } from "../models/protein"
+import { Protein, ProteinInfo } from "../models/Protein"
 import { getNextProteins, getProteinInfo, searchProteins } from "../clients/uniProtClient"
-import { Reference, doi } from "../models/reference"
+import { Reference, Doi } from "../models/Reference"
 
 function extractGenes(resultJson: any) {
     const gene = resultJson.genes ? resultJson.genes[0] : "";
@@ -32,7 +32,7 @@ function createPubMedLink(pubMedID: string): { pubMed: string | null, europePMC:
         };
     }
 }
-function createDoi(citations: any): doi {
+function createDoi(citations: any): Doi {
     function findDoi(citations: any): string | null {
         if (citations?.find((citation: any) => citation.database === "DOI")) {
             return `https://doi.org/${citations.find((citation: any) => citation.database === "DOI").id}`;

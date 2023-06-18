@@ -13,7 +13,7 @@ export const AuthRoute: FC<Props> = ({ children }) => {
     const [user, loading] = useAuthState(auth);
     
     if (loading) {
-        return <></>;
+        return null;
     }
 
     if (!user) {

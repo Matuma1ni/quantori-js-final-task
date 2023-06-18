@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Reference } from "../models/reference";
+import { Reference } from "../models/Reference";
 import "./ReferenceCard.css";
 import { RefButton } from "./RefButton";
 
