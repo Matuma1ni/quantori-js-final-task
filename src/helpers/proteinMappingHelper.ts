@@ -1,22 +1,25 @@
 import { Protein, ProteinInfo } from "../models/Protein"
 import { getNextProteins, getProteinInfo, searchProteins } from "../clients/uniProtClient"
 import { Reference, Doi } from "../models/Reference"
+import { UniprotProtein, EvidenceValue, Comment } from "../models/UniprotResponse";
 
-function extractGenes(resultJson: any) {
+function extractGenes(resultJson: UniprotProtein) {
     const gene = resultJson.genes ? resultJson.genes[0] : "";
+    if (!gene) {
+        return [];
+    }
     if (gene.synonyms) {
-        const polyNames = [gene.geneName.value, ...gene.synonyms.map((synonym: any) => synonym.value)].flat()
+        const polyNames = [gene.geneName.value, ...gene.synonyms.map((synonym: EvidenceValue) => synonym.value)].flat()
         return polyNames
     } else {
         return [gene.geneName?.value]
     }
 }
 
-function extractCellularLocation(resultJson: any) {
-    const cellularLocation = resultJson.comments?.
-        find((comment: any) => comment.commentType === 'SUBCELLULAR LOCATION')?.subcellularLocations
-        .map((obj: any) => obj.location.value)
-    return cellularLocation ?? []
+function extractCellularLocation(resultJson: UniprotProtein) {
+    let comments = resultJson.comments;
+    let subcellularLocations = comments?.find((comment: Comment) => comment.commentType === 'SUBCELLULAR LOCATION');
+    return subcellularLocations?.subcellularLocations?.map((obj: any) => obj.location.value) ?? [];
 }
 
 function createPubMedLink(pubMedID: string): { pubMed: string | null, europePMC: string | null } {
@@ -89,7 +92,7 @@ export async function createPolymersObject(searchQuery: string, filtersValues: a
         : searchProteins(searchQuery, filters, sortQuery);
     const { data, totalResults, link } = await promise;
     return {
-        proteins: data.map((result: any) => ({
+        proteins: data.map((result: UniprotProtein) => ({
             accession: result.primaryAccession,
             id: result.uniProtkbId,
             gene: extractGenes(result),
