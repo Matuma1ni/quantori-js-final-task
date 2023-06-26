@@ -113,9 +113,9 @@ export const ProteinPage = () => {
             </div>
             <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: '12px' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" >
-                    <Tab value="details" label="Details" {...a11yProps(0)} />
-                    <Tab value="feature_viewer" label="Feature Viewer" {...a11yProps(1)} />
-                    <Tab value="publications" label="Publications" {...a11yProps(2)} />
+                    <Tab label="Details" {...a11yProps(0)} />
+                    <Tab label="Feature Viewer" {...a11yProps(1)} />
+                    <Tab label="Publications" {...a11yProps(2)} />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
