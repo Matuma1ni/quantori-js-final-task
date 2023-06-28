@@ -3,7 +3,7 @@ import { ProteinInfo } from "../models/Protein"
 import { createPolymerInfoObject } from "../helpers/proteinMappingHelper"
 import { DOMAttributes, useEffect, useState } from "react"
 import "./ProteinPage.css"
-import { Box,IconButton, Tab, Tabs } from "@mui/material"
+import { Box, IconButton, Tab, Tabs } from "@mui/material"
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import Typography from '@mui/material/Typography'
 import { ReferenceCard } from "../components/ReferenceCard"
@@ -14,7 +14,7 @@ interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
     value: number;
-  }
+}
 
 const valueToTabs = [
     "details",
@@ -22,47 +22,47 @@ const valueToTabs = [
     "publications"
 ]
 
-const tabsToValue:Record<string, number> = {
+const tabsToValue: Record<string, number> = {
     "details": 0,
     "feature_viewer": 1,
     "publications": 2,
 }
-  
+
 function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
-  
+
     return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box sx={{ p: 3 }}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
     );
 }
-  
+
 function a11yProps(index: number) {
     return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
     };
 }
 
 type CustomElement<T> = Partial<T & DOMAttributes<T> & { children: any }>;
 
 declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      ['protvista-uniprot']: CustomElement<ProtvistaUniprot>;
+    namespace JSX {
+        interface IntrinsicElements {
+            ['protvista-uniprot']: CustomElement<ProtvistaUniprot>;
+        }
     }
-  }
 }
 
 export const ProteinPage = () => {
@@ -82,7 +82,7 @@ export const ProteinPage = () => {
             })
         }
     }, [])
-    
+
 
     const handleChange = (_: React.SyntheticEvent, newValue: number) => {
         setSearchParams(searchParams => {
@@ -93,8 +93,12 @@ export const ProteinPage = () => {
 
     useEffect(() => {
         async function fetch() {
-            const respProtein: ProteinInfo = await createPolymerInfoObject(id!);
-            setProteinInfo(respProtein);
+            try {
+                const respProtein: ProteinInfo = await createPolymerInfoObject(id!);
+                setProteinInfo(respProtein);
+            } catch (error) {
+                console.log(error)
+            }
         }
         fetch();
     }, [])
@@ -120,48 +124,48 @@ export const ProteinPage = () => {
             </Box>
             <TabPanel value={value} index={0}>
                 <div className="detailsContainer">
-                <h3 className="detailsHeader">Sequence</h3>
-                <table className="detailsTable">
-                    <tr>
-                        <td>
-                            <p className="tableData">Length<br />{proteinInfo?.length}</p>
-                        </td>
-                        <td>
-                            <p className="tableData">Last updated<br />{proteinInfo?.lastUpdated}</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td >
-                            <p className="tableData">Mass (Da)<br />{proteinInfo?.mass}</p>
-                        </td>
-                        <td >
-                            <p className="tableData">Checksum<br />{proteinInfo?.checksum}</p>
-                        </td>
-                    </tr>
-                </table>
-                <IconButton 
-                    onClick={() => {navigator.clipboard.writeText(proteinInfo?.sequence!)}}
-                    sx={{
-                    display: "flex",
-                    borderRadius: "8px",
-                    color: "#000000",
-                    fontSize: "12px",
-                    marginLeft: "auto",
-                    marginBottom: "6px", 
-                    marginTop: "-32px",               
-                    }}>
-                    <ContentCopyOutlinedIcon sx={{
-                    width: "16px",
-                    height: "16px",
-                }}/>
-                    <span> Copy </span>
-                </IconButton>
-                <div className="sequenceContainer">{proteinInfo?.sequence}</div>
+                    <h3 className="detailsHeader">Sequence</h3>
+                    <table className="detailsTable">
+                        <tr>
+                            <td>
+                                <p className="tableData">Length<br />{proteinInfo?.length}</p>
+                            </td>
+                            <td>
+                                <p className="tableData">Last updated<br />{proteinInfo?.lastUpdated}</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td >
+                                <p className="tableData">Mass (Da)<br />{proteinInfo?.mass}</p>
+                            </td>
+                            <td >
+                                <p className="tableData">Checksum<br />{proteinInfo?.checksum}</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <IconButton
+                        onClick={() => { navigator.clipboard.writeText(proteinInfo?.sequence!) }}
+                        sx={{
+                            display: "flex",
+                            borderRadius: "8px",
+                            color: "#000000",
+                            fontSize: "12px",
+                            marginLeft: "auto",
+                            marginBottom: "6px",
+                            marginTop: "-32px",
+                        }}>
+                        <ContentCopyOutlinedIcon sx={{
+                            width: "16px",
+                            height: "16px",
+                        }} />
+                        <span> Copy </span>
+                    </IconButton>
+                    <div className="sequenceContainer">{proteinInfo?.sequence}</div>
                 </div>
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <div className="uniprotWidgetContainer">
-                {/* @ts-ignore */}
+                    {/* @ts-ignore */}
                     <protvista-uniprot accession={id!} />
                 </div>
             </TabPanel>

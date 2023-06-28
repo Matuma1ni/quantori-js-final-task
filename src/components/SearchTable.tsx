@@ -13,7 +13,7 @@ export const SearchTable = () => {
     const tableContainerRef = useRef<HTMLDivElement>(null);
     const rowVirtualizerInstanceRef = useRef(null);
     const [sortField, setSortField] = useState('');
-    const [sortDirection, setSortDirection] = useState<string|null>(null)
+    const [sortDirection, setSortDirection] = useState<string | null>(null)
 
     useEffect(() => {
         if (searchParams.has("sort")) {
@@ -62,18 +62,18 @@ export const SearchTable = () => {
                     )
                 },
                 Header: ({ column, header }) => {
-                    let color: string|undefined = undefined;
-                    let direction: string|undefined = undefined;
+                    let color: string | undefined = undefined;
+                    let direction: string | undefined = undefined;
                     if (sortField === header.id) {
-                        color = "#3C86F4";   
+                        color = "#3C86F4";
                         if (sortDirection === "asc") {
                             direction = "rotate(180deg)";
                         }
-                    } 
+                    }
                     return (
                         <div className="headerCell">
                             <p>{column.columnDef.header}</p>
-                            <IconButton 
+                            <IconButton
                                 sx={{ width: "24px", height: "24px", color: color, transform: direction }}
                                 onClick={() => handleSort(header.id)}
                             >
@@ -89,18 +89,18 @@ export const SearchTable = () => {
                 minSize: 100,
                 maxSize: 140,
                 Header: ({ column, header }) => {
-                    let color: string|undefined = undefined;
-                    let direction: string|undefined = undefined;
+                    let color: string | undefined = undefined;
+                    let direction: string | undefined = undefined;
                     if (sortField === header.id) {
-                        color = "#3C86F4";   
+                        color = "#3C86F4";
                         if (sortDirection === "asc") {
                             direction = "rotate(180deg)";
                         }
-                    } 
+                    }
                     return (
                         <div className="headerCell">
                             <p>{column.columnDef.header}</p>
-                            <IconButton 
+                            <IconButton
                                 sx={{ width: "24px", height: "24px", color: color, transform: direction }}
                                 onClick={() => handleSort(header.id)}
                             >
@@ -125,18 +125,18 @@ export const SearchTable = () => {
                     )
                 },
                 Header: ({ column, header }) => {
-                    let color: string|undefined = undefined;
-                    let direction: string|undefined = undefined;
+                    let color: string | undefined = undefined;
+                    let direction: string | undefined = undefined;
                     if (sortField === header.id) {
-                        color = "#3C86F4";   
+                        color = "#3C86F4";
                         if (sortDirection === "asc") {
                             direction = "rotate(180deg)";
                         }
-                    } 
+                    }
                     return (
                         <div className="headerCell">
                             <p>{column.columnDef.header}</p>
-                            <IconButton 
+                            <IconButton
                                 onClick={() => handleSort(header.id)}
                                 sx={{ width: "24px", height: "24px", color: color, transform: direction }}
                             >
@@ -156,14 +156,14 @@ export const SearchTable = () => {
                     )
                 },
                 Header: ({ column, header }) => {
-                    let color: string|undefined = undefined;
-                    let direction: string|undefined = undefined;
+                    let color: string | undefined = undefined;
+                    let direction: string | undefined = undefined;
                     if (sortField === header.id) {
-                        color = "#3C86F4";   
+                        color = "#3C86F4";
                         if (sortDirection === "asc") {
                             direction = "rotate(180deg)";
                         }
-                    } 
+                    }
                     return (
                         <div className="headerCell">
                             <p>{column.columnDef.header}</p>
@@ -196,18 +196,18 @@ export const SearchTable = () => {
                 minSize: 80,
                 size: 100,
                 Header: ({ column, header }) => {
-                    let color: string|undefined = undefined;
-                    let direction: string|undefined = undefined;
+                    let color: string | undefined = undefined;
+                    let direction: string | undefined = undefined;
                     if (sortField === header.id) {
-                        color = "#3C86F4";   
+                        color = "#3C86F4";
                         if (sortDirection === "asc") {
                             direction = "rotate(180deg)";
                         }
-                    } 
+                    }
                     return (
                         <div className="headerCell">
                             <p>{column.columnDef.header}</p>
-                            <IconButton 
+                            <IconButton
                                 sx={{ width: "24px", height: "24px", color: color, transform: direction }}
                                 onClick={() => handleSort(header.id)}
                             >
@@ -218,7 +218,7 @@ export const SearchTable = () => {
                 }
             },
         ]
-    , [handleSort]);
+        , [handleSort]);
 
     const searchQuery = decodeURI(searchParams.get("query") ?? "") as string;
 
@@ -230,12 +230,17 @@ export const SearchTable = () => {
         useInfiniteQuery({
             queryKey: ['table-data'],
             queryFn: async ({ pageParam = null }) => {
-                if (pageParam) {
-                    const newProteins = await createPolymersObject(pageParam, filters, sortField, sortDirection);
-                    return newProteins;
-                } else {
-                    const newProteins = await createPolymersObject(searchQuery, filters, sortField, sortDirection);
-                    return newProteins;
+                try {
+                    if (pageParam) {
+                        const newProteins = await createPolymersObject(pageParam, filters, sortField, sortDirection);
+                        return newProteins;
+                    } else {
+                        const newProteins = await createPolymersObject(searchQuery, filters, sortField, sortDirection);
+                        return newProteins;
+                    }
+                } catch (error) {
+                    console.log(error);
+                    return {proteins: [], totalNumber: 0, nextURL: null};
                 }
             },
             getNextPageParam: (_lastGroup, _) => _lastGroup.nextURL,
@@ -291,7 +296,7 @@ export const SearchTable = () => {
                     'mrt-row-numbers': {
                         size: 12,
                         maxSize: 12,
-                        Header: ({}) => {
+                        Header: ({ }) => {
                             return (
                                 <div className="headerCell">
                                     <p>#</p>
